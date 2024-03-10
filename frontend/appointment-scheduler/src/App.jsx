@@ -2,6 +2,7 @@ import './App.css'
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import NotFound from './pages/NotFound';
 import Login from './pages/Login';
+import Landing from './pages/Landing';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/thereis" element={<ThereIs><ThereIs/>}/>
           <Route path="/what" element={<What><What/>}/>
         </Route> */}
+        <Route exact path="/" element={<Landing></Landing>} />
         <Route exact path="/login" element={<Login></Login>} />
         <Route path="*" element={<NotFound></NotFound>} />
       </Routes>
