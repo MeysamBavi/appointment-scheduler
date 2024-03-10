@@ -1,4 +1,17 @@
-# React + Vite
+# Appointment Scheduler Front By React
+
+## Components
+
+- Pages
+    - NotFound: when route does not exists (404 error).
+    - Login: it is what it is.
+
+- Components
+    - App: root of the Components containing routes.
+    - Debug: fills the parent for debug components.
+
+
+## Using React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 

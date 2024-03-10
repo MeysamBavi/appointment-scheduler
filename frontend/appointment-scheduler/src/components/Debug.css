@@ -1,0 +1,10 @@
+.debug {
+    height: 100%;
+    width: 100%;
+    font-size: 200%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: peru;
+    color: whitesmoke;
+}
