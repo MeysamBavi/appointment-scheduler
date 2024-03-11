@@ -1,5 +1,5 @@
 import Debug from '../components/Debug';
-import './Login.css'
+import '../styles/Login.css'
 
 function Login() {
 	return (
