@@ -1,16 +1,17 @@
+import { Box, Container } from "@mui/material";
 
 function Debug(props) {
 	return (
-		<div style={{height: "100%",
-			width: "100%",
-			fontSize: "200%",
-			display: "flex",
-			justifyContent: "center",
-			alignItems: "center",
-			backgroundColor: "peru",
-			color: "whitesmoke"}}>
+		<Box
+			height={"100%"}
+			width={"100%"}
+			display="flex"
+			alignItems="center"
+			justifyContent={"center"}
+			backgroundColor={props.color || "lightblue"}
+		>
 			{props.text}
-		</div>
+		</Box>
 	)
 }
 

@@ -1,4 +1,4 @@
-import './App.css'
+import './styles/App.css'
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import NotFound from './pages/NotFound';
 import Login from './pages/Login';
