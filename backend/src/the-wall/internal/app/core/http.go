@@ -3,6 +3,9 @@ package core
 import (
 	"fmt"
 
+	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/clients/kvstore"
+	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/clients/notification"
+	"github.com/MeysamBavi/appointment-scheduler/backend/src/the-wall/internal/clients"
 	"github.com/labstack/echo/v4"
 )
 
@@ -13,20 +16,31 @@ type Config struct {
 type HTTPService struct {
 	server *echo.Echo
 	config Config
+
+	otpClient clients.OTP
 }
 
-func NewHTTPService(config Config) *HTTPService {
+func NewHTTPService(
+	config Config,
+	kvStore kvstore.KVStore,
+	notificator notification.Notificator,
+) *HTTPService {
 	e := echo.New()
-	initRoutes(e)
-
-	return &HTTPService{
+	service := &HTTPService{
 		server: e,
 		config: config,
+
+		otpClient: clients.NewOTPClient(kvStore, notificator),
 	}
+
+	initRoutes(e, service)
+
+	return service
 }
 
-func initRoutes(e *echo.Echo) {
-	e.GET("/login", login)
+func initRoutes(e *echo.Echo, service *HTTPService) {
+	e.POST("/otp/send", service.sendOTP)
+	e.POST("/otp/validate", service.validateOTP)
 }
 
 func (s *HTTPService) Start() {

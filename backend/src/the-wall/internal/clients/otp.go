@@ -48,6 +48,9 @@ func (o *fakeOTP) ValidateOTP(phoneNumber string, code string) (bool, error) {
 	return storedCode == code, nil
 }
 
-func NewOTPClient() OTP {
-	return &fakeOTP{}
+func NewOTPClient(store kvstore.KVStore, notificator notification.Notificator) OTP {
+	return &fakeOTP{
+		store:       store,
+		notificator: notificator,
+	}
 }
