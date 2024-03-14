@@ -7,6 +7,7 @@ import (
 	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/clients/kvstore"
 	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/clients/notification"
 	"github.com/MeysamBavi/appointment-scheduler/backend/src/the-wall/internal/clients"
+	"github.com/MeysamBavi/appointment-scheduler/backend/src/the-wall/internal/jwt"
 	"github.com/labstack/echo/v4"
 )
 
@@ -20,12 +21,14 @@ type HTTPService struct {
 	config Config
 
 	otpClient clients.OTP
+	jwtSdk    *jwt.JWT
 }
 
 func NewHTTPService(
 	config Config,
 	kvStore kvstore.KVStore,
 	notificator notification.Notificator,
+	jwtSdk *jwt.JWT,
 ) *HTTPService {
 	e := echo.New()
 	if config.EnableCORS {
@@ -36,6 +39,7 @@ func NewHTTPService(
 		config: config,
 
 		otpClient: clients.NewOTPClient(kvStore, notificator),
+		jwtSdk:    jwtSdk,
 	}
 
 	initRoutes(e, service)

@@ -4,6 +4,7 @@ import (
 	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/clients/kvstore"
 	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/clients/notification"
 	"github.com/MeysamBavi/appointment-scheduler/backend/src/the-wall/internal/app/core"
+	"github.com/MeysamBavi/appointment-scheduler/backend/src/the-wall/internal/jwt"
 )
 
 func main() {
@@ -14,6 +15,7 @@ func main() {
 		},
 		kvstore.NewMemoryKVStore(),
 		notification.NewConsoleLogger(),
+		jwt.NewJWT("sth"),
 	)
 
 	service.Start()
