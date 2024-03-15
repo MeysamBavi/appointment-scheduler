@@ -50,6 +50,7 @@ func NewHTTPService(
 func initRoutes(e *echo.Echo, service *HTTPService) {
 	e.POST("/otp/send", service.sendOTP)
 	e.POST("/otp/validate", service.validateOTP)
+	e.POST("/authenticate", service.authenticateRequest)
 }
 
 func (s *HTTPService) Start() {

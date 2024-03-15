@@ -1,6 +1,9 @@
 package jwt
 
 import (
+	"errors"
+	"fmt"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -10,9 +13,13 @@ const (
 	phoneNumberKey     = "phone_number"
 	expiresKey         = "exp"
 	expirationDuration = 3 * time.Hour
+	authTokenType      = "Bearer"
 )
 
-var signingMethod = jwt.SigningMethodHS256
+var (
+	signingMethod           = jwt.SigningMethodHS256
+	invalidTokenFormatError = errors.New("invalid token format")
+)
 
 type JWT struct {
 	key string
@@ -28,13 +35,28 @@ func (j *JWT) GetSignedJWT(phoneNumber string) (string, error) {
 		expiresKey:     time.Now().Add(expirationDuration).Unix(),
 	}
 
-	return jwt.NewWithClaims(signingMethod, claims).SignedString([]byte(j.key))
+	signedString, err := jwt.NewWithClaims(signingMethod, claims).SignedString([]byte(j.key))
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("%s %s", authTokenType, signedString), nil
 }
 
 func (j *JWT) CheckValidity(token string) (bool, error) {
+	tokenSplits := strings.Split(token, " ")
+	if len(tokenSplits) != 2 {
+		return false, invalidTokenFormatError
+	}
+
+	jwtToken, tokenType := tokenSplits[1], tokenSplits[0]
+	if tokenType != authTokenType {
+		return false, invalidTokenFormatError
+	}
+
 	claims := jwt.MapClaims{}
 	parse, err := jwt.ParseWithClaims(
-		token,
+		jwtToken,
 		claims,
 		func(token *jwt.Token) (interface{}, error) {
 			return []byte(j.key), nil
