@@ -9,7 +9,8 @@ import (
 func main() {
 	service := core.NewHTTPService(
 		core.Config{
-			Port: 8080,
+			Port:       8080,
+			EnableCORS: true,
 		},
 		kvstore.NewMemoryKVStore(),
 		notification.NewConsoleLogger(),
