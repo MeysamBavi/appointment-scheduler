@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://127.0.0.1:8080';
+const BASE_URL = 'http://localhost:32775';
 
 export const sendOTP = async (phoneNumber) => {
   try {
@@ -13,8 +13,8 @@ export const sendOTP = async (phoneNumber) => {
 
 export const validateOTP = async (phoneNumber, otp) => {
   try {
-    const response = await axios.post(`${BASE_URL}/otp/validate`, { phone_number: phoneNumber, otp });
-    const jwtToken = response.data.jwt;
+    const response = await axios.post(`${BASE_URL}/otp/validate`, { phone_number: phoneNumber, code : otp });
+    const jwtToken = response.data.token;
     axios.defaults.headers.common['Authorization'] = `Bearer ${jwtToken}`;
     return jwtToken;
   } catch (error) {

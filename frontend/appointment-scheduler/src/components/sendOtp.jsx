@@ -27,7 +27,7 @@ function SendOTP({ phone , goToStepZero}) {
   const handleVerifyOTP = async () => {
     if (otp.trim() !== "") {
       try {
-        // const jwtToken = await validateOTP(phone, otp);
+        const jwtToken = await validateOTP(phone, otp);
         alert("OTP validated successfully!");
         NavigateTo("/");
       } catch (error) {
