@@ -2,6 +2,7 @@ package core
 
 import (
 	"fmt"
+	"github.com/labstack/echo/v4/middleware"
 
 	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/clients/kvstore"
 	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/clients/notification"
@@ -10,7 +11,8 @@ import (
 )
 
 type Config struct {
-	Port int
+	Port       int
+	EnableCORS bool
 }
 
 type HTTPService struct {
@@ -26,6 +28,9 @@ func NewHTTPService(
 	notificator notification.Notificator,
 ) *HTTPService {
 	e := echo.New()
+	if config.EnableCORS {
+		e.Use(middleware.CORS())
+	}
 	service := &HTTPService{
 		server: e,
 		config: config,
