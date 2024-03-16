@@ -111,8 +111,14 @@ func (s *HTTPService) validateOTP(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, otpIsInvalidResponse)
 	}
 
+	jwtToken, err := s.jwtSdk.GetSignedJWT(request.PhoneNumber)
+	if err != nil {
+		ctx.Logger().Error(err)
+		return ctx.JSON(http.StatusInternalServerError, validateInternalErrorResponse)
+	}
+
 	return ctx.JSON(http.StatusOK, validateOTPResponse{
 		Message: "You are logged in.",
-		Token:   "TODO, FILL WITH JWT CODE",
+		Token:   jwtToken,
 	})
 }
