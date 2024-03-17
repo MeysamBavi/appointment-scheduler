@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+
+  postgres:
+    image: postgres:latest
+    volumes:
+      - ~/apps/postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=citadel
+
+  the-wall:
+    build:
+      dockerfile: ./src/the-wall/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=citadel
