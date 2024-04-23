@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:32775';
+const BASE_URL = 'http://localhost:32768';
 
 export const sendOTP = async (phoneNumber) => {
   try {
