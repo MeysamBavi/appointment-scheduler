@@ -22,3 +22,7 @@ func (s *HTTPService) authenticateRequest(ctx echo.Context) error {
 
 	return ctx.JSON(http.StatusOK, nil)
 }
+
+func (s *HTTPService) test(ctx echo.Context) error {
+	return ctx.JSON(http.StatusOK, nil)
+}
