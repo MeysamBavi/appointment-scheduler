@@ -2,6 +2,7 @@ package core
 
 import (
 	"fmt"
+
 	"github.com/labstack/echo/v4/middleware"
 
 	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/clients/kvstore"
@@ -50,7 +51,8 @@ func NewHTTPService(
 func initRoutes(e *echo.Echo, service *HTTPService) {
 	e.POST("/otp/send", service.sendOTP)
 	e.POST("/otp/validate", service.validateOTP)
-	e.POST("/authenticate", service.authenticateRequest)
+	e.GET("/authenticate", service.authenticateRequest)
+	e.POST("/test", service.test)
 }
 
 func (s *HTTPService) Start() {
