@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app: frontend
+spec:
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: "ghcr.io/meysambavi/frontend:0.1"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+              name: http
+          volumeMounts:
+            - mountPath: /etc/config
+              name: config
+      volumes:
+        - name: config
+          configMap:
+            name: frontend
+      imagePullSecrets:
+        - name: ghcr.secret

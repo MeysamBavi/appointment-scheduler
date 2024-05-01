@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend
+data:
+  config.yaml: |
+    # the config file with yaml format
+    mode: Debug

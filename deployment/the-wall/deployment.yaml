@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: the-wall
+  labels:
+    app: the-wall
+spec:
+  selector:
+    matchLabels:
+      app: the-wall
+  template:
+    metadata:
+      labels:
+        app: the-wall
+    spec:
+      containers:
+        - name: the-wall
+          image: "ghcr.io/meysambavi/the-wall:v0.1"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+              name: http
+          volumeMounts:
+            - mountPath: /etc/config
+              name: config
+      volumes:
+        - name: config
+          configMap:
+            name: the-wall
+      imagePullSecrets:
+        - name: ghcr.secret
