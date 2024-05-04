@@ -5,29 +5,36 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  pull_request_target:
+    types:
+      - opened
+      - edited
+      - synchronize
+
+permissions:
+  pull-requests: read
+  packages: write
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Validate PR Title
-        uses: amannn/action-semantic-pull-request@v5
+        uses: amannn/action-semantic-pull-request@v5.5.2
         id: pr_title
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            
+        with:
+          requireScope: true
       - name: Identify Build Target
         id: build_info
         working-directory: "."
-        env:
-          SCOPE: ${{ steps.pr_title.outputs.scope }}
-          RUN_NUMBER: ${{ github.run_number }}
         run: |
-          scope="$SCOPE"
-          run_number=$(( ${RUN_NUMBER:-0} * 100 + RANDOM % 100 ))
+          run_number="${{ github.run_number }}"
+          scope="${{ steps.pr_title.outputs.scope }}"
           
           if [ -z "$scope" ]; then
               echo "scope variable is not set" >&2
@@ -35,27 +42,27 @@ jobs:
           fi
           
           context=""
-          path=""
-          tag=""
+          file=""
+          tag="ghcr.io/meysambavi/$scope:$run_number"
           
           if [ "$scope" = "frontend" ]; then
               context="./frontend/appointment-scheduler"
-              path="./Dockerfile"
-              tag="frontend:$run_number"
+              file="./frontend/appointment-scheduler/Dockerfile"
           else
               context="."
-              path="./backend/src/$scope/Dockerfile"
-              tag="$scope:$run_number"
+              file="./backend/src/$scope/Dockerfile"
           fi
-          
+                    
           echo "context=$context" >> "$GITHUB_OUTPUT"
-          echo "path=$path" >> "$GITHUB_OUTPUT"
-          echo "tag=ghcr.io/meysambavi/$tag" >> "$GITHUB_OUTPUT"
+          echo "file=$file" >> "$GITHUB_OUTPUT"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          
+          echo "build context: $context"
+          echo "Dockerfile path: $file"
+          echo "image tag: $tag"
           
           exit 0
-      
-      - name: Checkout
-        uses: actions/checkout@v4
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
@@ -67,7 +74,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and export
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v5.3.0
         with:
           context: ${{ steps.build_info.outputs.context }}
           tags: ${{ steps.build_info.outputs.tag }}
