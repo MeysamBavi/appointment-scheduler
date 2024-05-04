@@ -1,7 +1,7 @@
 name: Deploy
 on:
   push:
-    branches: [ "deploy", "add-ci-cd" ]
+    branches: [ "deploy" ]
 jobs:
 
   deploy:
@@ -16,7 +16,7 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             set -e
-            branch="add-ci-cd"
+            branch="deploy"
             cd ~/appointment-scheduler
             git checkout "$branch"
             git fetch --all
