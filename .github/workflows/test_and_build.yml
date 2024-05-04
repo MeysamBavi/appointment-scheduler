@@ -35,6 +35,7 @@ jobs:
         run: |
           run_number="${{ github.run_number }}"
           scope="${{ steps.pr_title.outputs.scope }}"
+          event="${{ github.event_name }}"
           
           if [ -z "$scope" ]; then
               echo "scope variable is not set" >&2
@@ -43,7 +44,13 @@ jobs:
           
           context=""
           file=""
-          tag="ghcr.io/meysambavi/$scope:$run_number"
+          tag=""
+          tag_prefix="ghcr.io/meysambavi/"
+          if [ "$event" = "push" ]; then  
+            tag="$tag_prefix$scope:$run_number,$tag_prefix$scope:latest"
+          else
+            tag="$tag_prefix$scope:beta-$run_number"
+          fi
           
           if [ "$scope" = "frontend" ]; then
               context="./frontend/appointment-scheduler"
