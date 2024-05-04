@@ -1,15 +1,13 @@
 name: Build and Push
 
 on:
-  push:
-    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-  pull_request_target:
     types:
       - opened
       - edited
       - synchronize
+      - reopened
 
 permissions:
   pull-requests: read
@@ -35,7 +33,6 @@ jobs:
         run: |
           run_number="${{ github.run_number }}"
           scope="${{ steps.pr_title.outputs.scope }}"
-          event="${{ github.event_name }}"
           
           if [ -z "$scope" ]; then
               echo "scope variable is not set" >&2
@@ -46,11 +43,7 @@ jobs:
           file=""
           tag=""
           tag_prefix="ghcr.io/meysambavi/"
-          if [ "$event" = "push" ]; then  
-            tag="$tag_prefix$scope:$run_number,$tag_prefix$scope:latest"
-          else
-            tag="$tag_prefix$scope:beta-$run_number"
-          fi
+          tag="$tag_prefix$scope:$run_number,$tag_prefix$scope:latest"
           
           if [ "$scope" = "frontend" ]; then
               context="./frontend/appointment-scheduler"
