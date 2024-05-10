@@ -1,5 +1,4 @@
 import { Grid, Button, Hidden, Typography } from "@mui/material";
-import landing_desktop from "../assets/landing_desktop.jpg";
 import landing_mobile from "../assets/landing_mobile.jpg";
 import Layout from "../components/LayOut";
 import { Link } from 'react-router-dom';
@@ -14,6 +13,7 @@ function Landing() {
           justifyContent: "center",
           alignItems: "center",
           height: "100vh",
+          position: "fixed"
         }}
       >
         <Hidden mdDown>
@@ -67,7 +67,7 @@ function Landing() {
             color="primary"
             style={{ marginTop: "20px", height: "max-content" }}
             component={Link}
-            to="/owner-appointmets"
+            to="/ownerCreateForm"
           >
             ساخت صفحه شخصی
           </Button>
