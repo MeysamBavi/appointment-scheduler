@@ -1,10 +1,11 @@
 
-module.exports = class apiConfig {
-    static hostname = 'http://localhost/api';
-    static port = 32768;
+
+export default class apiConfig {
+    static hostname = import.meta.env.VITE_API_HOSTNAME;
+    static port = import.meta.env.VITE_API_PORT;
 
     static baseUrl() {
-        return `${this.hostname}:${this.port}`
+        return `${this.hostname}:${this.port}/api`
     }
 
     static otpBaseUrl() {
@@ -16,6 +17,6 @@ module.exports = class apiConfig {
     }
 
     static otpValidateUrl() {
-        return `${this.otpSendUrl()}/validate`
+        return `${this.otpBaseUrl()}/validate`
     }
 }

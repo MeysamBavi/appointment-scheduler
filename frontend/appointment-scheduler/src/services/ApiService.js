@@ -1,4 +1,5 @@
 import axios from 'axios';
+import apiConfig from './apiConfig';
 
 export const sendOTP = async (phoneNumber) => {
   try {
