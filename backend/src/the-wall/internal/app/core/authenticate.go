@@ -16,7 +16,7 @@ func (s *HTTPService) authenticateRequest(ctx echo.Context) error {
 		return ctx.JSON(http.StatusUnauthorized, nil)
 	}
 
-	if hasValidToken, err := s.jwtSdk.CheckValidity(token[0]); err != nil || !hasValidToken {
+	if err := s.jwtSdk.CheckValidity(token[0]); err != nil {
 		return ctx.JSON(http.StatusUnauthorized, nil)
 	}
 

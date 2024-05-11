@@ -2,13 +2,13 @@ package core
 
 import (
 	"fmt"
+	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/jwt"
 
 	"github.com/labstack/echo/v4/middleware"
 
 	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/clients/kvstore"
 	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/clients/notification"
 	"github.com/MeysamBavi/appointment-scheduler/backend/src/the-wall/internal/clients"
-	"github.com/MeysamBavi/appointment-scheduler/backend/src/the-wall/internal/jwt"
 	"github.com/labstack/echo/v4"
 )
 

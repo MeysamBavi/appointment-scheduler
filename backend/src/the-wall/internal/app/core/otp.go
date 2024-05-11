@@ -2,6 +2,7 @@ package core
 
 import (
 	"errors"
+	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/jwt"
 	"net/http"
 	"regexp"
 
@@ -111,7 +112,7 @@ func (s *HTTPService) validateOTP(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, otpIsInvalidResponse)
 	}
 
-	jwtToken, err := s.jwtSdk.GetSignedJWT(request.PhoneNumber)
+	jwtToken, err := s.jwtSdk.GetSignedJWT(jwt.Payload{PhoneNumber: request.PhoneNumber})
 	if err != nil {
 		ctx.Logger().Error(err)
 		return ctx.JSON(http.StatusInternalServerError, validateInternalErrorResponse)
