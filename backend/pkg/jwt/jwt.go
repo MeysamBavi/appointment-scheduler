@@ -93,3 +93,15 @@ func (j *JWT) CheckValidity(token string) error {
 
 	return nil
 }
+
+// ExtractPayload parses the token but does not verify the signature.
+func (j *JWT) ExtractPayload(token string) (Payload, error) {
+	parsed, _, err := jwt.NewParser().ParseUnverified(token, &Claims{})
+	if err != nil {
+		return Payload{}, err
+	}
+	if claims, ok := parsed.Claims.(*Claims); ok {
+		return claims.Payload, nil
+	}
+	return Payload{}, nil
+}
