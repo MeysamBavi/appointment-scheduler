@@ -1,13 +1,21 @@
 
+module.exports = class apiConfig {
+    static hostname = 'http://localhost/api';
+    static port = 32768;
 
-// TODO: create a hierarchial architecture for reuse baseUrl
-module.exports = {
-    // --------------------------------- bases
-    hostname: 'http://localhost/api',
-    port: 32768,
-    baseUrl: 'http://localhost/api:23768',
+    static baseUrl() {
+        return `${this.hostname}:${this.port}`
+    }
 
-    // --------------------------------- full urls
-    otpSendUrl: 'http://localhost/api:23768/otp/send',
-    otpValidateUrl: 'http://localhost/api:23768/otp/validate'
+    static otpBaseUrl() {
+        return `${this.baseUrl()}/otp`
+    }
+
+    static otpSendUrl() {
+        return `${this.otpBaseUrl()}/send`
+    }
+
+    static otpValidateUrl() {
+        return `${this.otpSendUrl()}/validate`
+    }
 }
