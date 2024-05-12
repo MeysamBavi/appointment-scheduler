@@ -2,22 +2,15 @@ package jwt
 
 import (
 	"errors"
-	"fmt"
-	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 )
 
-const (
-	authTokenType = "Bearer"
-)
-
 var (
-	signingMethod     = jwt.SigningMethodHS256
-	ErrMalformedToken = errors.New("invalid token format")
-	ErrInvalidToken   = errors.New("invalid token")
+	signingMethod   = jwt.SigningMethodHS256
+	ErrInvalidToken = errors.New("invalid token")
 )
 
 type JWT struct {
@@ -26,7 +19,8 @@ type JWT struct {
 }
 
 func NewJWT(key string, options ...Option) *JWT {
-	j := &JWT{key: key,
+	j := &JWT{
+		key:                key,
 		expirationDuration: 3 * time.Hour,
 	}
 	for _, option := range options {
@@ -61,22 +55,12 @@ func (j *JWT) GetSignedJWT(payload Payload) (string, error) {
 		return "", err
 	}
 
-	return fmt.Sprintf("%s %s", authTokenType, signedString), nil
+	return signedString, nil
 }
 
 func (j *JWT) CheckValidity(token string) error {
-	tokenSplits := strings.Split(token, " ")
-	if len(tokenSplits) != 2 {
-		return ErrMalformedToken
-	}
-
-	jwtToken, tokenType := tokenSplits[1], tokenSplits[0]
-	if tokenType != authTokenType {
-		return ErrMalformedToken
-	}
-
 	parsed, err := jwt.ParseWithClaims(
-		jwtToken,
+		token,
 		&Claims{},
 		func(token *jwt.Token) (interface{}, error) {
 			return []byte(j.key), nil

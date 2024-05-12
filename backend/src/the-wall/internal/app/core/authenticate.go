@@ -1,22 +1,19 @@
 package core
 
 import (
+	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/httpserver"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
 )
 
-const (
-	authorizationTokenHeaderKey = "Authorization"
-)
-
 func (s *HTTPService) authenticateRequest(ctx echo.Context) error {
-	token, tokenPresent := ctx.Request().Header[authorizationTokenHeaderKey]
-	if !tokenPresent || len(token) == 0 {
+	token, tokenPresent := httpserver.GetRequestToken(ctx)
+	if !tokenPresent {
 		return ctx.JSON(http.StatusUnauthorized, nil)
 	}
 
-	if err := s.jwtSdk.CheckValidity(token[0]); err != nil {
+	if err := s.jwtSdk.CheckValidity(token); err != nil {
 		return ctx.JSON(http.StatusUnauthorized, nil)
 	}
 
