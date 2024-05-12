@@ -1,9 +1,8 @@
 export default class apiConfig {
-  static hostname = import.meta.env.VITE_API_HOSTNAME;
-  static port = import.meta.env.VITE_API_PORT;
+  static host = "http://135.125.116.88:80";
 
   static baseUrl() {
-    return `${this.hostname}:${this.port}/api`;
+    return `${this.host}/api`;
   }
 
   static authBaseUrl() {

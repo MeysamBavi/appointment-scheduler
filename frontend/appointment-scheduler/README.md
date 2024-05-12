@@ -1,13 +1,5 @@
 # Appointment Scheduler Front By React
 
-## Configs
-
-- Create `.env` file here with key and value s:
-```
-VITE_API_HOSTNAME=http://**********
-VITE_API_PORT=****
-```
-
 ## Components
 
 - Pages
