@@ -120,7 +120,7 @@ func (s *HTTPService) UpdateBusiness(ctx echo.Context) error {
 		return ctx.JSON(http.StatusInternalServerError, &updateBusinessResponse{Message: "internal error"})
 	}
 
-	// TODO: get business and check user_id and throw 403 if doesn't owned by this user
+	// TODO: get business and check user_id and throw 403 if it doesn't own by this user
 	// if business.UserID != userID {
 	//
 	// }
@@ -161,7 +161,7 @@ func (s *HTTPService) DeleteBusiness(ctx echo.Context) error {
 		return ctx.JSON(http.StatusInternalServerError, &updateBusinessResponse{Message: "internal error"})
 	}
 
-	// TODO: get business and check user_id and throw 403 if doesn't owned by this user
+	// TODO: get business and check user_id and throw 403 if it doesn't own by this user
 	// if business.UserID != userID {
 	//
 	// }

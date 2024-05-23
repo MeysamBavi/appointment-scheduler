@@ -4,6 +4,6 @@ import "gorm.io/gorm"
 
 type BusinessService struct {
 	gorm.Model
-	Business Business `gorm:"embedded"`
+	Business Business
 	Name     string
 }
