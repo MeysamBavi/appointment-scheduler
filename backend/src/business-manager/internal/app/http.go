@@ -49,10 +49,16 @@ func NewHTTPService(
 func initRoutes(e *echo.Echo, service *HTTPService) {
 	e.GET("/service_types", service.GetServiceType)
 
-	e.POST("/employees", service.CreateEmployee)
+	e.POST("/businesses/:business_id/employees", service.CreateEmployee)
 	e.GET("/businesses/:business_id/employees", service.GetEmployees)
 	e.GET("/businesses/:business_id/employees/:employee_id", service.GetEmployee)
 	e.DELETE("/businesses/:business_id/employees/:employee_id", service.DeleteEmployee)
+
+	e.POST("/businesses/:business_id/services", service.CreateBusinessService)
+	e.GET("/businesses/:business_id/services", service.GetBusinessServices)
+	e.GET("/businesses/:business_id/services/:service_id", service.GetBusinessService)
+	e.DELETE("/businesses/:business_id/services/:service_id", service.DeleteBusinessService)
+	e.PUT("/businesses/:business_id/services/:service_id", service.UpdateBusinessService)
 
 	e.POST("/businesses", service.CreateBusiness)
 	e.GET("/businesses", service.GetBusinesses)
@@ -66,6 +72,7 @@ func migrateDatabase(db *gorm.DB) {
 		&models.ServiceType{},
 		&models.Business{},
 		&models.Employee{},
+		&models.BusinessService{},
 	} {
 		err := db.AutoMigrate(model)
 		if err != nil {
