@@ -14,6 +14,10 @@ data:
                 proxy_pass http://the-wall/;
             }
 
+            location /api/business-manager/ {
+                proxy_pass http://business-manager/;
+            }
+
             location = /api/auth/test {
                 auth_request /api/auth/authenticate;
                 proxy_pass http://the-wall/test;
@@ -26,6 +30,10 @@ data:
 
         upstream the-wall {
             server the-wall;
+        }
+
+        upstream business-manager {
+            server business-manager;
         }
 
         upstream frontend {
