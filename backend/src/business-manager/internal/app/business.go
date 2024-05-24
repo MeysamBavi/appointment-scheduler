@@ -24,6 +24,15 @@ func (s *HTTPService) CreateBusiness(ctx echo.Context) error {
 		return ctx.JSON(http.StatusInternalServerError, &MessageResponse{internalError})
 	}
 
+	if _, err = handlers.GetServiceType(s.db, request.ServiceType); err != nil {
+		if errors.Is(err, handlers.ErrNoRows) {
+			return ctx.JSON(http.StatusNotFound, &MessageResponse{"service type not found."})
+		}
+
+		ctx.Logger().Error(err)
+		return ctx.JSON(http.StatusInternalServerError, &MessageResponse{internalError})
+	}
+
 	err = handlers.CreateBusiness(s.db, &models.Business{
 		Name:          request.Name,
 		Address:       request.Address,

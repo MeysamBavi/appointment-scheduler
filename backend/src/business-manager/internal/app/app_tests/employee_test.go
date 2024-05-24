@@ -1,4 +1,4 @@
-package app_test
+package app_tests
 
 import (
 	"encoding/json"
@@ -17,9 +17,9 @@ import (
 	"gorm.io/gorm"
 )
 
-const testDBName = "test_gorm.db"
+const employeeTestDBName = "test_gorm.db"
 
-type IntegrationTestSuite struct {
+type EmployeeTestSuite struct {
 	suite.Suite
 
 	service *app.HTTPService
@@ -28,12 +28,12 @@ type IntegrationTestSuite struct {
 	gormDB *gorm.DB
 }
 
-func TestIntegrationTestSuite(t *testing.T) {
-	suite.Run(t, new(IntegrationTestSuite))
+func TestEmployeeTestSuite(t *testing.T) {
+	suite.Run(t, new(EmployeeTestSuite))
 }
 
-func (t *IntegrationTestSuite) SetupTest() {
-	gormDB, err := gorm.Open(sqlite.Open(testDBName), &gorm.Config{TranslateError: true})
+func (t *EmployeeTestSuite) SetupTest() {
+	gormDB, err := gorm.Open(sqlite.Open(employeeTestDBName), &gorm.Config{TranslateError: true})
 	t.NoError(err)
 	t.gormDB = gormDB
 
@@ -51,12 +51,12 @@ func (t *IntegrationTestSuite) SetupTest() {
 	t.NoError(result.Error)
 }
 
-func (t *IntegrationTestSuite) TearDownTest() {
-	err := os.Remove(testDBName)
+func (t *EmployeeTestSuite) TearDownTest() {
+	err := os.Remove(employeeTestDBName)
 	t.NoError(err)
 }
 
-func (t *IntegrationTestSuite) TestCreateEmployeeCreatesEmployeeWithoutError() {
+func (t *EmployeeTestSuite) TestCreateEmployeeCreatesEmployeeWithoutError() {
 	body := `{"user": 5}`
 	req := httptest.NewRequest(http.MethodPost, "/businesses/1/employees", strings.NewReader(body))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
@@ -78,7 +78,7 @@ func (t *IntegrationTestSuite) TestCreateEmployeeCreatesEmployeeWithoutError() {
 	t.Equal("employee created.", bodyMap["message"].(string))
 }
 
-func (t *IntegrationTestSuite) TestCreateEmployeeReturnErrorWhenBusinessNotExists() {
+func (t *EmployeeTestSuite) TestCreateEmployeeReturnErrorWhenBusinessNotExists() {
 	body := `{"user": 5}`
 	req := httptest.NewRequest(http.MethodPost, "/businesses/2/employees", strings.NewReader(body))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
@@ -100,7 +100,7 @@ func (t *IntegrationTestSuite) TestCreateEmployeeReturnErrorWhenBusinessNotExist
 	t.Equal("business not found.", bodyMap["message"].(string))
 }
 
-func (t *IntegrationTestSuite) TestCreateEmployeeReturnErrorRequesterIsNotOwner() {
+func (t *EmployeeTestSuite) TestCreateEmployeeReturnErrorRequesterIsNotOwner() {
 	body := `{"user": 5}`
 	req := httptest.NewRequest(http.MethodPost, "/businesses/1/employees", strings.NewReader(body))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
@@ -122,7 +122,7 @@ func (t *IntegrationTestSuite) TestCreateEmployeeReturnErrorRequesterIsNotOwner(
 	t.Equal("you aren't business owner.", bodyMap["message"].(string))
 }
 
-func (t *IntegrationTestSuite) TestCreateEmployeeReturnErrorWhenRequestIsDuplicate() {
+func (t *EmployeeTestSuite) TestCreateEmployeeReturnErrorWhenRequestIsDuplicate() {
 	body := `{"user": 50}`
 	req := httptest.NewRequest(http.MethodPost, "/businesses/2/employees", strings.NewReader(body))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
@@ -154,7 +154,7 @@ func (t *IntegrationTestSuite) TestCreateEmployeeReturnErrorWhenRequestIsDuplica
 	t.Equal("employee already exist.", bodyMap["message"].(string))
 }
 
-func (t *IntegrationTestSuite) TestCreateEmployeeReturnErrorWhenNotAuthorized() {
+func (t *EmployeeTestSuite) TestCreateEmployeeReturnErrorWhenNotAuthorized() {
 	body := `{"user": 50}`
 	req := httptest.NewRequest(http.MethodPost, "/businesses/2/employees", strings.NewReader(body))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
@@ -175,7 +175,7 @@ func (t *IntegrationTestSuite) TestCreateEmployeeReturnErrorWhenNotAuthorized() 
 	t.Equal("you are not authorized.", bodyMap["message"].(string))
 }
 
-func (t *IntegrationTestSuite) TestCreateEmployeeReturnErrorWhenUserNotSent() {
+func (t *EmployeeTestSuite) TestCreateEmployeeReturnErrorWhenUserNotSent() {
 	body := `{}`
 	req := httptest.NewRequest(http.MethodPost, "/businesses/2/employees", strings.NewReader(body))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)

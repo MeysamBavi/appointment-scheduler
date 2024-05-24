@@ -11,3 +11,14 @@ func GetServiceTypes(db *gorm.DB, query string) ([]models.ServiceType, error) {
 
 	return serviceTypes, result.Error
 }
+
+func GetServiceType(db *gorm.DB, serviceID uint) (*models.ServiceType, error) {
+	var serviceType models.ServiceType
+	result := db.Find(&serviceType, "id=?", serviceID)
+
+	if result.RowsAffected == 0 {
+		return nil, ErrNoRows
+	}
+
+	return &serviceType, result.Error
+}
