@@ -22,13 +22,13 @@ func (s *HTTPService) GetServiceType(ctx echo.Context) error {
 	err := ctx.Bind(&request)
 	if err != nil {
 		ctx.Logger().Error(err)
-		return ctx.JSON(http.StatusInternalServerError, &getServiceTypeResponse{Message: "internal error"})
+		return ctx.JSON(http.StatusInternalServerError, &getServiceTypeResponse{Message: internalError})
 	}
 
 	serviceTypes, err := handlers.GetServiceTypes(s.db, request.Q)
 	if err != nil {
 		ctx.Logger().Error(err)
-		return ctx.JSON(http.StatusInternalServerError, &getServiceTypeResponse{Message: "internal error"})
+		return ctx.JSON(http.StatusInternalServerError, &getServiceTypeResponse{Message: internalError})
 	}
 
 	return ctx.JSON(http.StatusOK, getServiceTypeResponse{ServiceTypes: serviceTypes})

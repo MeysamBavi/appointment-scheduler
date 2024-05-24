@@ -4,7 +4,6 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/httpserver"
 	"github.com/MeysamBavi/appointment-scheduler/backend/src/business-manager/internal/handlers"
 	"github.com/MeysamBavi/appointment-scheduler/backend/src/business-manager/internal/models"
 	"github.com/labstack/echo/v4"
@@ -21,15 +20,8 @@ func (s *HTTPService) CreateEmployee(ctx echo.Context) error {
 	err := ctx.Bind(&request)
 	if err != nil {
 		ctx.Logger().Error(err)
-		return ctx.JSON(http.StatusInternalServerError, &MessageResponse{"internal error"})
+		return ctx.JSON(http.StatusInternalServerError, &MessageResponse{internalError})
 	}
-	userID, ok := httpserver.GetUserId(ctx)
-	if !ok {
-		return ctx.JSON(http.StatusUnauthorized, &MessageResponse{
-			Message: "you are not authorized.",
-		})
-	}
-
 	if request.User == 0 {
 		return ctx.JSON(
 			http.StatusBadRequest,
@@ -37,20 +29,14 @@ func (s *HTTPService) CreateEmployee(ctx echo.Context) error {
 		)
 	}
 
-	business, err := handlers.GetBusiness(s.db, request.Business)
+	isOwner, err := checkUserIsBusinessOwner(ctx, s.db, request.Business)
 	if err != nil {
-		if errors.Is(err, handlers.ErrNoRows) {
-			return ctx.JSON(http.StatusNotFound, &MessageResponse{"business not found."})
-		}
-
-		ctx.Logger().Error(err)
-		return ctx.JSON(http.StatusInternalServerError, &MessageResponse{"internal error"})
+		response, status := handleBusinessOwnerPermissionError(err)
+		return ctx.JSON(status, response)
 	}
-	if business.UserID != uint(userID) {
+	if !isOwner {
 		return ctx.JSON(http.StatusForbidden, &MessageResponse{Message: "you aren't business owner."})
 	}
-
-	// TODO: check permission
 
 	if err = handlers.CreateEmployee(s.db, &models.Employee{
 		UserID:     request.User,
@@ -60,7 +46,7 @@ func (s *HTTPService) CreateEmployee(ctx echo.Context) error {
 			return ctx.JSON(http.StatusConflict, &MessageResponse{"employee already exist."})
 		}
 		ctx.Logger().Error(err)
-		return ctx.JSON(http.StatusInternalServerError, &MessageResponse{"internal error"})
+		return ctx.JSON(http.StatusInternalServerError, &MessageResponse{internalError})
 	}
 
 	return ctx.JSON(http.StatusCreated, &MessageResponse{"employee created."})
@@ -80,32 +66,21 @@ func (s *HTTPService) GetEmployees(ctx echo.Context) error {
 	err := ctx.Bind(&request)
 	if err != nil {
 		ctx.Logger().Error(err)
-		return ctx.JSON(http.StatusInternalServerError, &getEmployeesResponse{Message: "internal error"})
+		return ctx.JSON(http.StatusInternalServerError, &getEmployeesResponse{Message: internalError})
 	}
-	userID, ok := httpserver.GetUserId(ctx)
-	if !ok {
-		return ctx.JSON(http.StatusUnauthorized, &getEmployeesResponse{
-			Message: "you are not authorized.",
-		})
-	}
-
-	business, err := handlers.GetBusiness(s.db, request.Business)
+	isOwner, err := checkUserIsBusinessOwner(ctx, s.db, request.Business)
 	if err != nil {
-		if errors.Is(err, handlers.ErrNoRows) {
-			return ctx.JSON(http.StatusNotFound, &getEmployeesResponse{Message: "business not found."})
-		}
-
-		ctx.Logger().Error(err)
-		return ctx.JSON(http.StatusInternalServerError, &getEmployeesResponse{Message: "internal error"})
+		response, status := handleBusinessOwnerPermissionError(err)
+		return ctx.JSON(status, response)
 	}
-	if business.UserID != uint(userID) {
-		return ctx.JSON(http.StatusForbidden, &getEmployeesResponse{Message: "you aren't business owner."})
+	if !isOwner {
+		return ctx.JSON(http.StatusForbidden, &MessageResponse{Message: "you aren't business owner."})
 	}
 
 	employees, err := handlers.GetEmployees(s.db, request.Business)
 	if err != nil {
 		ctx.Logger().Error(err)
-		return ctx.JSON(http.StatusInternalServerError, &getEmployeesResponse{Message: "internal error"})
+		return ctx.JSON(http.StatusInternalServerError, &getEmployeesResponse{Message: internalError})
 	}
 
 	return ctx.JSON(http.StatusOK, &getEmployeesResponse{Employees: employees, Message: "employees retrieved."})
@@ -126,26 +101,15 @@ func (s *HTTPService) GetEmployee(ctx echo.Context) error {
 	err := ctx.Bind(&request)
 	if err != nil {
 		ctx.Logger().Error(err)
-		return ctx.JSON(http.StatusInternalServerError, &getEmployeeResponse{Message: "internal error"})
+		return ctx.JSON(http.StatusInternalServerError, &getEmployeeResponse{Message: internalError})
 	}
-	userID, ok := httpserver.GetUserId(ctx)
-	if !ok {
-		return ctx.JSON(http.StatusUnauthorized, &getEmployeeResponse{
-			Message: "you are not authorized.",
-		})
-	}
-
-	business, err := handlers.GetBusiness(s.db, request.Business)
+	isOwner, err := checkUserIsBusinessOwner(ctx, s.db, request.Business)
 	if err != nil {
-		if errors.Is(err, handlers.ErrNoRows) {
-			return ctx.JSON(http.StatusNotFound, &getEmployeeResponse{Message: "business not found."})
-		}
-
-		ctx.Logger().Error(err)
-		return ctx.JSON(http.StatusInternalServerError, &getEmployeeResponse{Message: "internal error"})
+		response, status := handleBusinessOwnerPermissionError(err)
+		return ctx.JSON(status, response)
 	}
-	if business.UserID != uint(userID) {
-		return ctx.JSON(http.StatusForbidden, &getEmployeeResponse{Message: "you aren't business owner."})
+	if !isOwner {
+		return ctx.JSON(http.StatusForbidden, &MessageResponse{Message: "you aren't business owner."})
 	}
 
 	employee, err := handlers.GetEmployee(s.db, request.Employee, request.Business)
@@ -154,7 +118,7 @@ func (s *HTTPService) GetEmployee(ctx echo.Context) error {
 			return ctx.JSON(http.StatusNotFound, &getEmployeeResponse{Message: "employee not found."})
 		}
 		ctx.Logger().Error(err)
-		return ctx.JSON(http.StatusInternalServerError, &getEmployeeResponse{Message: "internal error"})
+		return ctx.JSON(http.StatusInternalServerError, &getEmployeeResponse{Message: internalError})
 	}
 
 	return ctx.JSON(http.StatusOK, &getEmployeeResponse{Employee: employee, Message: "employees retrieved."})
@@ -170,25 +134,14 @@ func (s *HTTPService) DeleteEmployee(ctx echo.Context) error {
 	err := ctx.Bind(&request)
 	if err != nil {
 		ctx.Logger().Error(err)
-		return ctx.JSON(http.StatusInternalServerError, &MessageResponse{Message: "internal error"})
+		return ctx.JSON(http.StatusInternalServerError, &MessageResponse{Message: internalError})
 	}
-	userID, ok := httpserver.GetUserId(ctx)
-	if !ok {
-		return ctx.JSON(http.StatusUnauthorized, &MessageResponse{
-			Message: "you are not authorized.",
-		})
-	}
-
-	business, err := handlers.GetBusiness(s.db, request.Business)
+	isOwner, err := checkUserIsBusinessOwner(ctx, s.db, request.Business)
 	if err != nil {
-		if errors.Is(err, handlers.ErrNoRows) {
-			return ctx.JSON(http.StatusNotFound, &MessageResponse{Message: "business not found."})
-		}
-
-		ctx.Logger().Error(err)
-		return ctx.JSON(http.StatusInternalServerError, &MessageResponse{Message: "internal error"})
+		response, status := handleBusinessOwnerPermissionError(err)
+		return ctx.JSON(status, response)
 	}
-	if business.UserID != uint(userID) {
+	if !isOwner {
 		return ctx.JSON(http.StatusForbidden, &MessageResponse{Message: "you aren't business owner."})
 	}
 
@@ -198,7 +151,7 @@ func (s *HTTPService) DeleteEmployee(ctx echo.Context) error {
 			return ctx.JSON(http.StatusNotFound, &MessageResponse{Message: "employee not found."})
 		}
 		ctx.Logger().Error(err)
-		return ctx.JSON(http.StatusInternalServerError, &MessageResponse{Message: "internal error"})
+		return ctx.JSON(http.StatusInternalServerError, &MessageResponse{Message: internalError})
 	}
 
 	return ctx.JSON(http.StatusOK, &MessageResponse{
