@@ -1,0 +1,62 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Appointment Scheduler API",
+    "description": "An OpenAPI documentation for The Appointment Scheduler project's RESTful API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/api",
+      "description": "Development server"
+    }
+  ],
+  "paths": {
+    "/auth/otp/send": {
+      "post": {
+        "summary": "Send OTP Code",
+        "description": "Send an OTP code to the provided phone number.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "phone_number": {
+                    "type": "string",
+                    "description": "The phone number to which the OTP code will be sent."
+                  }
+                },
+                "example": {
+                  "phone_number": "09123123123"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "A message indicating the success of the operation."
+                    }
+                  },
+                  "example": {
+                    "message": "Otp code sent. Check your phone."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
