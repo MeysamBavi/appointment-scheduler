@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { Component, useState } from "react";
 import Layout from "../components/LayOut";
 import Debug from "../components/Debug";
 import "../styles/BusinessProfilePage.css";
@@ -11,20 +11,21 @@ import {
   Container,
   Divider,
   Button,
+  Autocomplete,
 } from "@mui/material";
 import FormInformationProperty from "../components/FormInformationProperty";
 
-const testData = {
-  name: "پیرایش زیبا",
-  kind: "پیرایشی",
-  owner: {
-    name: "رضا",
-    family: "خوش دست",
-    phoneNumber: "09123456789",
-  },
-};
-
 function BusinessProfile() {
+  const [businessInfo, setBusinessInfo] = useState({
+    name: "پیرایش زیبا",
+    businessType: "زیبایی",
+    owner: {
+      name: "رضا",
+      family: "خوش دست",
+      phoneNumber: "09123456789",
+    },
+  });
+
   return (
     <Layout>
       <Container className="todortl" sx={{ px: 1, py: 3 }}>
@@ -47,16 +48,35 @@ function BusinessProfile() {
           <TextField
             fullWidth
             placeholder="نام"
-            defaultValue={testData.name}
+            defaultValue={businessInfo.name}
           ></TextField>
         </FormInformationProperty>
 
         <FormInformationProperty propertyName="نوع">
-          <TextField
+          <Autocomplete
+            options={["املاک", "زیبایی", "سلامت", "موارد دیگر"]}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                InputProps={{
+                  ...params.InputProps,
+                  endAdornment: (
+                    <div>{params.InputProps.endAdornment.props.children}</div>
+                  ),
+                  startAdornment: null,
+                }}
+                label="نوع کسب و کار"
+                fullWidth
+              />
+            )}
+            value={businessInfo.businessType}
+            onChange={(_, value) =>
+              setBusinessInfo({ ...businessInfo, businessType: value })
+            }
             fullWidth
-            placeholder="نوع"
-            defaultValue={testData.kind}
-          ></TextField>
+            getOptionLabel={(option) => option}
+            isOptionEqualToValue={(option, value) => option === value}
+          />
         </FormInformationProperty>
 
         <FormInformationProperty propertyName="اطلاعات مالک">
@@ -64,7 +84,7 @@ function BusinessProfile() {
             <Container>
               <TextField
                 placeholder="نام"
-                defaultValue={testData.owner.name}
+                defaultValue={businessInfo.owner.name}
                 fullWidth
                 sx={{
                   my: 1,
@@ -72,14 +92,14 @@ function BusinessProfile() {
               />
               <TextField
                 placeholder="نام خانوادگی"
-                defaultValue={testData.owner.family}
+                defaultValue={businessInfo.owner.family}
                 fullWidth
                 sx={{ my: 1 }}
               />
               <TextField
                 type="number"
                 placeholder="شماره تلفن"
-                defaultValue={testData.owner.phoneNumber}
+                defaultValue={businessInfo.owner.phoneNumber}
                 fullWidth
                 sx={{ my: 1 }}
               />
