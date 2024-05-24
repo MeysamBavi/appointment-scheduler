@@ -14,6 +14,7 @@ type getServiceTypeRequest struct {
 
 type getServiceTypeResponse struct {
 	ServiceTypes []models.ServiceType `json:"service_types"`
+	Message      string               `json:"message"`
 }
 
 func (s *HTTPService) GetServiceType(ctx echo.Context) error {
@@ -21,13 +22,13 @@ func (s *HTTPService) GetServiceType(ctx echo.Context) error {
 	err := ctx.Bind(&request)
 	if err != nil {
 		ctx.Logger().Error(err)
-		return ctx.JSON(http.StatusInternalServerError, "internal error")
+		return ctx.JSON(http.StatusInternalServerError, &getServiceTypeResponse{Message: "internal error"})
 	}
 
 	serviceTypes, err := handlers.GetServiceTypes(s.db, request.Q)
 	if err != nil {
 		ctx.Logger().Error(err)
-		return ctx.JSON(http.StatusInternalServerError, "internal error")
+		return ctx.JSON(http.StatusInternalServerError, &getServiceTypeResponse{Message: "internal error"})
 	}
 
 	return ctx.JSON(http.StatusOK, getServiceTypeResponse{ServiceTypes: serviceTypes})

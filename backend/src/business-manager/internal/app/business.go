@@ -16,16 +16,12 @@ type createBusinessRequest struct {
 	ServiceType uint   `json:"service_type"`
 }
 
-type createBusinessResponse struct {
-	Message string `json:"message"`
-}
-
 func (s *HTTPService) CreateBusiness(ctx echo.Context) error {
 	request := createBusinessRequest{}
 	err := ctx.Bind(&request)
 	if err != nil {
 		ctx.Logger().Error(err)
-		return ctx.JSON(http.StatusInternalServerError, &createBusinessResponse{"internal error"})
+		return ctx.JSON(http.StatusInternalServerError, &MessageResponse{"internal error"})
 	}
 
 	err = handlers.CreateBusiness(s.db, &models.Business{
@@ -35,10 +31,10 @@ func (s *HTTPService) CreateBusiness(ctx echo.Context) error {
 	})
 	if err != nil {
 		ctx.Logger().Error(err)
-		return ctx.JSON(http.StatusInternalServerError, &createBusinessResponse{"internal error"})
+		return ctx.JSON(http.StatusInternalServerError, &MessageResponse{"internal error"})
 	}
 
-	return ctx.JSON(http.StatusCreated, &createBusinessResponse{"business created."})
+	return ctx.JSON(http.StatusCreated, &MessageResponse{"business created."})
 }
 
 type getBusinessesResponse struct {
@@ -102,20 +98,16 @@ type updateBusinessRequest struct {
 	createBusinessRequest
 }
 
-type updateBusinessResponse struct {
-	Message string `json:"message"`
-}
-
 func (s *HTTPService) UpdateBusiness(ctx echo.Context) error {
 	request := updateBusinessRequest{}
 	err := ctx.Bind(&request)
 	if err != nil {
 		ctx.Logger().Error(err)
-		return ctx.JSON(http.StatusInternalServerError, &updateBusinessResponse{Message: "internal error"})
+		return ctx.JSON(http.StatusInternalServerError, &MessageResponse{Message: "internal error"})
 	}
 	userID, ok := httpserver.GetUserId(ctx)
 	if !ok {
-		return ctx.JSON(http.StatusUnauthorized, &updateBusinessResponse{
+		return ctx.JSON(http.StatusUnauthorized, &MessageResponse{
 			Message: "you are not authorized.",
 		})
 	}
@@ -123,14 +115,14 @@ func (s *HTTPService) UpdateBusiness(ctx echo.Context) error {
 	business, err := handlers.GetBusiness(s.db, request.BusinessID)
 	if err != nil {
 		if errors.Is(err, handlers.ErrNoRows) {
-			return ctx.JSON(http.StatusNotFound, &updateBusinessResponse{Message: "business not found"})
+			return ctx.JSON(http.StatusNotFound, &MessageResponse{Message: "business not found"})
 		}
 
 		ctx.Logger().Error(err)
-		return ctx.JSON(http.StatusInternalServerError, &updateBusinessResponse{Message: "internal error"})
+		return ctx.JSON(http.StatusInternalServerError, &MessageResponse{Message: "internal error"})
 	}
 	if business.UserID != uint(userID) {
-		return ctx.JSON(http.StatusForbidden, &updateBusinessResponse{Message: "you aren't business owner."})
+		return ctx.JSON(http.StatusForbidden, &MessageResponse{Message: "you aren't business owner."})
 	}
 
 	if err = handlers.UpdateBusiness(s.db, request.BusinessID, &models.Business{
@@ -139,10 +131,10 @@ func (s *HTTPService) UpdateBusiness(ctx echo.Context) error {
 		ServiceTypeID: request.ServiceType,
 	}); err != nil {
 		ctx.Logger().Error(err)
-		return ctx.JSON(http.StatusInternalServerError, &updateBusinessResponse{Message: "internal error"})
+		return ctx.JSON(http.StatusInternalServerError, &MessageResponse{Message: "internal error"})
 	}
 
-	return ctx.JSON(http.StatusOK, &updateBusinessResponse{
+	return ctx.JSON(http.StatusOK, &MessageResponse{
 		Message: "business updated.",
 	})
 }
@@ -151,20 +143,16 @@ type deleteBusinessRequest struct {
 	BusinessID uint `param:"business_id"`
 }
 
-type deleteBusinessResponse struct {
-	Message string `json:"message"`
-}
-
 func (s *HTTPService) DeleteBusiness(ctx echo.Context) error {
 	request := deleteBusinessRequest{}
 	err := ctx.Bind(&request)
 	if err != nil {
 		ctx.Logger().Error(err)
-		return ctx.JSON(http.StatusInternalServerError, &deleteBusinessResponse{Message: "internal error"})
+		return ctx.JSON(http.StatusInternalServerError, &MessageResponse{Message: "internal error"})
 	}
 	userID, ok := httpserver.GetUserId(ctx)
 	if !ok {
-		return ctx.JSON(http.StatusUnauthorized, &deleteBusinessResponse{
+		return ctx.JSON(http.StatusUnauthorized, &MessageResponse{
 			Message: "you are not authorized.",
 		})
 	}
@@ -172,22 +160,22 @@ func (s *HTTPService) DeleteBusiness(ctx echo.Context) error {
 	business, err := handlers.GetBusiness(s.db, request.BusinessID)
 	if err != nil {
 		if errors.Is(err, handlers.ErrNoRows) {
-			return ctx.JSON(http.StatusNotFound, &deleteBusinessResponse{Message: "business not found"})
+			return ctx.JSON(http.StatusNotFound, &MessageResponse{Message: "business not found"})
 		}
 
 		ctx.Logger().Error(err)
-		return ctx.JSON(http.StatusInternalServerError, &deleteBusinessResponse{Message: "internal error"})
+		return ctx.JSON(http.StatusInternalServerError, &MessageResponse{Message: "internal error"})
 	}
 	if business.UserID != uint(userID) {
-		return ctx.JSON(http.StatusForbidden, &deleteBusinessResponse{Message: "you aren't business owner."})
+		return ctx.JSON(http.StatusForbidden, &MessageResponse{Message: "you aren't business owner."})
 	}
 
 	if err = handlers.DeleteBusiness(s.db, request.BusinessID); err != nil {
 		ctx.Logger().Error(err)
-		return ctx.JSON(http.StatusInternalServerError, &deleteBusinessResponse{Message: "internal error"})
+		return ctx.JSON(http.StatusInternalServerError, &MessageResponse{Message: "internal error"})
 	}
 
-	return ctx.JSON(http.StatusOK, &deleteBusinessResponse{
+	return ctx.JSON(http.StatusOK, &MessageResponse{
 		Message: "business deleted.",
 	})
 }
