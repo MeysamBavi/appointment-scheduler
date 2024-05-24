@@ -40,7 +40,7 @@ func handleBusinessOwnerPermissionError(err error) (string, int) {
 		response = "you are not authorized."
 		status = http.StatusUnauthorized
 	} else if errors.Is(err, errBusinessNotFound) {
-		response = "business not found"
+		response = "business not found."
 		status = http.StatusNotFound
 	} else {
 		response = internalError

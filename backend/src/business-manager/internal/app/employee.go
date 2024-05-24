@@ -16,6 +16,7 @@ type createEmployeeRequest struct {
 }
 
 func (s *HTTPService) CreateEmployee(ctx echo.Context) error {
+	ctx.Logger().Error("here")
 	request := createEmployeeRequest{}
 	err := ctx.Bind(&request)
 	if err != nil {
@@ -32,7 +33,7 @@ func (s *HTTPService) CreateEmployee(ctx echo.Context) error {
 	isOwner, err := checkUserIsBusinessOwner(ctx, s.db, request.Business)
 	if err != nil {
 		response, status := handleBusinessOwnerPermissionError(err)
-		return ctx.JSON(status, response)
+		return ctx.JSON(status, &MessageResponse{Message: response})
 	}
 	if !isOwner {
 		return ctx.JSON(http.StatusForbidden, &MessageResponse{Message: "you aren't business owner."})
