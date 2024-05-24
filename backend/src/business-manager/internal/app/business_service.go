@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/httpserver"
 	"github.com/MeysamBavi/appointment-scheduler/backend/src/business-manager/internal/handlers"
 	"github.com/MeysamBavi/appointment-scheduler/backend/src/business-manager/internal/models"
 	"github.com/labstack/echo/v4"
@@ -25,8 +26,15 @@ func (s *HTTPService) CreateBusinessService(ctx echo.Context) error {
 		ctx.Logger().Error(err)
 		return ctx.JSON(http.StatusInternalServerError, &createBusinessServiceResponse{"internal error"})
 	}
+	userID, ok := httpserver.GetUserId(ctx)
+	if !ok {
+		return ctx.JSON(http.StatusUnauthorized, &createBusinessServiceResponse{
+			Message: "you are not authorized.",
+		})
+	}
 
-	if _, err = handlers.GetBusiness(s.db, request.Business); err != nil {
+	business, err := handlers.GetBusiness(s.db, request.Business)
+	if err != nil {
 		if errors.Is(err, handlers.ErrNoRows) {
 			return ctx.JSON(http.StatusNotFound, &createBusinessServiceResponse{"business not found."})
 		}
@@ -34,8 +42,9 @@ func (s *HTTPService) CreateBusinessService(ctx echo.Context) error {
 		ctx.Logger().Error(err)
 		return ctx.JSON(http.StatusInternalServerError, &createBusinessServiceResponse{"internal error"})
 	}
-
-	// TODO: check permission
+	if business.UserID != uint(userID) {
+		return ctx.JSON(http.StatusForbidden, &createBusinessServiceResponse{Message: "you aren't business owner."})
+	}
 
 	if err = handlers.CreateBusinessService(s.db, &models.BusinessService{
 		Name:       request.Name,
@@ -64,8 +73,6 @@ func (s *HTTPService) GetBusinessServices(ctx echo.Context) error {
 		ctx.Logger().Error(err)
 		return ctx.JSON(http.StatusInternalServerError, &getBusinessServicesResponse{Message: "internal error"})
 	}
-
-	// TODO: check permissions to see business service
 
 	businessServices, err := handlers.GetBusinessServices(s.db, request.Business)
 	if err != nil {
@@ -128,8 +135,25 @@ func (s *HTTPService) DeleteBusinessService(ctx echo.Context) error {
 		ctx.Logger().Error(err)
 		return ctx.JSON(http.StatusInternalServerError, &deleteBusinessServiceResponse{Message: "internal error"})
 	}
+	userID, ok := httpserver.GetUserId(ctx)
+	if !ok {
+		return ctx.JSON(http.StatusUnauthorized, &deleteBusinessServiceResponse{
+			Message: "you are not authorized.",
+		})
+	}
 
-	// TODO: check user is owner of service
+	business, err := handlers.GetBusiness(s.db, request.Business)
+	if err != nil {
+		if errors.Is(err, handlers.ErrNoRows) {
+			return ctx.JSON(http.StatusNotFound, &deleteBusinessServiceResponse{"business not found."})
+		}
+
+		ctx.Logger().Error(err)
+		return ctx.JSON(http.StatusInternalServerError, &deleteBusinessServiceResponse{"internal error"})
+	}
+	if business.UserID != uint(userID) {
+		return ctx.JSON(http.StatusForbidden, &deleteBusinessServiceResponse{Message: "you aren't business owner."})
+	}
 
 	if err = handlers.DeleteBusinessService(s.db, request.BusinessService, request.Business); err != nil {
 		if errors.Is(err, handlers.ErrNoRows) {
@@ -161,8 +185,26 @@ func (s *HTTPService) UpdateBusinessService(ctx echo.Context) error {
 		ctx.Logger().Error(err)
 		return ctx.JSON(http.StatusInternalServerError, &updateBusinessServiceResponse{Message: "internal error"})
 	}
+	userID, ok := httpserver.GetUserId(ctx)
+	if !ok {
+		return ctx.JSON(http.StatusUnauthorized, &updateBusinessServiceResponse{
+			Message: "you are not authorized.",
+		})
+	}
 
-	// TODO: check permissions
+	business, err := handlers.GetBusiness(s.db, request.Business)
+	if err != nil {
+		if errors.Is(err, handlers.ErrNoRows) {
+			return ctx.JSON(http.StatusNotFound, &updateBusinessServiceResponse{"business not found."})
+		}
+
+		ctx.Logger().Error(err)
+		return ctx.JSON(http.StatusInternalServerError, &updateBusinessServiceResponse{"internal error"})
+	}
+	if business.UserID != uint(userID) {
+		return ctx.JSON(http.StatusForbidden, &updateBusinessServiceResponse{Message: "you aren't business owner."})
+	}
+
 	if err = handlers.UpdateBusinessService(s.db, request.BusinessService, &models.BusinessService{
 		Name: request.Name,
 	}); err != nil {

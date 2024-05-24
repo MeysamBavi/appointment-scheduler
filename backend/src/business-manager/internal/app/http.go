@@ -3,6 +3,7 @@ package app
 import (
 	"fmt"
 
+	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/httpserver"
 	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/jwt"
 	"github.com/MeysamBavi/appointment-scheduler/backend/src/business-manager/internal/models"
 	"github.com/labstack/echo/v4"
@@ -49,22 +50,42 @@ func NewHTTPService(
 func initRoutes(e *echo.Echo, service *HTTPService) {
 	e.GET("/service_types", service.GetServiceType)
 
-	e.POST("/businesses/:business_id/employees", service.CreateEmployee)
-	e.GET("/businesses/:business_id/employees", service.GetEmployees)
-	e.GET("/businesses/:business_id/employees/:employee_id", service.GetEmployee)
-	e.DELETE("/businesses/:business_id/employees/:employee_id", service.DeleteEmployee)
+	e.POST("/businesses/:business_id/employees", service.CreateEmployee, httpserver.JWTMiddleware(service.jwtSdk))
+	e.GET("/businesses/:business_id/employees", service.GetEmployees, httpserver.JWTMiddleware(service.jwtSdk))
+	e.GET(
+		"/businesses/:business_id/employees/:employee_id",
+		service.GetEmployee,
+		httpserver.JWTMiddleware(service.jwtSdk),
+	)
+	e.DELETE(
+		"/businesses/:business_id/employees/:employee_id",
+		service.DeleteEmployee,
+		httpserver.JWTMiddleware(service.jwtSdk),
+	)
 
-	e.POST("/businesses/:business_id/services", service.CreateBusinessService)
+	e.POST(
+		"/businesses/:business_id/services",
+		service.CreateBusinessService,
+		httpserver.JWTMiddleware(service.jwtSdk),
+	)
 	e.GET("/businesses/:business_id/services", service.GetBusinessServices)
 	e.GET("/businesses/:business_id/services/:service_id", service.GetBusinessService)
-	e.DELETE("/businesses/:business_id/services/:service_id", service.DeleteBusinessService)
-	e.PUT("/businesses/:business_id/services/:service_id", service.UpdateBusinessService)
+	e.DELETE(
+		"/businesses/:business_id/services/:service_id",
+		service.DeleteBusinessService,
+		httpserver.JWTMiddleware(service.jwtSdk),
+	)
+	e.PUT(
+		"/businesses/:business_id/services/:service_id",
+		service.UpdateBusinessService,
+		httpserver.JWTMiddleware(service.jwtSdk),
+	)
 
-	e.POST("/businesses", service.CreateBusiness)
-	e.GET("/businesses", service.GetBusinesses)
-	e.GET("/businesses/:business_id", service.GetBusiness)
-	e.PUT("/businesses/:business_id", service.UpdateBusiness)
-	e.DELETE("/businesses/:business_id", service.DeleteBusiness)
+	e.POST("/businesses", service.CreateBusiness, httpserver.JWTMiddleware(service.jwtSdk))
+	e.GET("/businesses", service.GetBusinesses, httpserver.JWTMiddleware(service.jwtSdk))
+	e.GET("/businesses/:business_id", service.GetBusiness, httpserver.JWTMiddleware(service.jwtSdk))
+	e.PUT("/businesses/:business_id", service.UpdateBusiness, httpserver.JWTMiddleware(service.jwtSdk))
+	e.DELETE("/businesses/:business_id", service.DeleteBusiness, httpserver.JWTMiddleware(service.jwtSdk))
 }
 
 func migrateDatabase(db *gorm.DB) {
