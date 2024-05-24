@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Grid, Button, Box, Typography } from "@mui/material";
-import TextField from "@mui/material/TextField";
+import { Grid, Button, Typography } from "@mui/material";
+import Box from "@mui/material/Box";
+
 import { sendOTP, validateOTP } from "../services/ApiService";
 import { useNavigate } from "react-router-dom";
 import { MuiOtpInput } from "mui-one-time-password-input";

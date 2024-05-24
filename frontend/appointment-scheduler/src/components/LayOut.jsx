@@ -17,7 +17,7 @@ function Layout({ children }) {
   };
 
   return (
-    <div style={{ overflow: "hidden", position: "fixed" }}>
+    <div style={{ overflow: "hidden"}}>
       <AppBar position="static">
         <Toolbar>
           <ClickAwayListener onClickAway={handleClose}>

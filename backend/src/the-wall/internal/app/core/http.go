@@ -2,13 +2,14 @@ package core
 
 import (
 	"fmt"
+	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/httpserver"
+	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/jwt"
 
 	"github.com/labstack/echo/v4/middleware"
 
 	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/clients/kvstore"
 	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/clients/notification"
 	"github.com/MeysamBavi/appointment-scheduler/backend/src/the-wall/internal/clients"
-	"github.com/MeysamBavi/appointment-scheduler/backend/src/the-wall/internal/jwt"
 	"github.com/labstack/echo/v4"
 )
 
@@ -52,7 +53,7 @@ func initRoutes(e *echo.Echo, service *HTTPService) {
 	e.POST("/otp/send", service.sendOTP)
 	e.POST("/otp/validate", service.validateOTP)
 	e.GET("/authenticate", service.authenticateRequest)
-	e.POST("/test", service.test)
+	e.POST("/test", service.test, httpserver.JWTMiddleware(service.jwtSdk))
 }
 
 func (s *HTTPService) Start() {

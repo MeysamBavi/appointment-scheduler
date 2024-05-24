@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: business-manager
+  labels:
+    app: business-manager
+spec:
+  selector:
+    matchLabels:
+      app: business-manager
+  template:
+    metadata:
+      labels:
+        app: business-manager
+    spec:
+      containers:
+        - name: business-manager
+          image: "ghcr.io/meysambavi/business-manager:v0.1"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+              name: http
+          volumeMounts:
+            - mountPath: /etc/config
+              name: config
+      volumes:
+        - name: config
+          configMap:
+            name: business-manager
+      imagePullSecrets:
+        - name: ghcr.secret
