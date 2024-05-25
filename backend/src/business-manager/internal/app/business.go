@@ -58,7 +58,7 @@ func (s *HTTPService) GetBusinesses(ctx echo.Context) error {
 			Message: "you are not authorized.",
 		})
 	}
-	businesses, err := handlers.GetBusinesses(s.db, uint(userID))
+	businesses, err := handlers.GetBusinesses(s.db, userID)
 	if err != nil {
 		ctx.Logger().Error(err)
 		return ctx.JSON(http.StatusInternalServerError, &getBusinessesResponse{Message: internalError})
