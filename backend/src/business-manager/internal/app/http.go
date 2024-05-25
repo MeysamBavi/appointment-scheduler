@@ -106,10 +106,10 @@ func migrateDatabase(db *gorm.DB) {
 	result := db.First(&sampleServiceType)
 	if result.RowsAffected == 0 {
 		db.Create(&models.ServiceType{
-			Name: "service_type1",
+			Name: "پزشکی",
 		})
 		db.Create(&models.ServiceType{
-			Name: "servicetype2",
+			Name: "آرایشی",
 		})
 	}
 }
