@@ -33,10 +33,16 @@ func (s *HTTPService) CreateBusiness(ctx echo.Context) error {
 		return ctx.JSON(http.StatusInternalServerError, &MessageResponse{internalError})
 	}
 
+	userID, userIDPresents := httpserver.GetUserId(ctx)
+	if !userIDPresents {
+		return ctx.JSON(http.StatusUnauthorized, &MessageResponse{Message: "unauthorized."})
+	}
+
 	err = handlers.CreateBusiness(s.db, &models.Business{
 		Name:          request.Name,
 		Address:       request.Address,
 		ServiceTypeID: request.ServiceType,
+		UserID:        uint(userID),
 	})
 	if err != nil {
 		ctx.Logger().Error(err)
@@ -64,7 +70,7 @@ func (s *HTTPService) GetBusinesses(ctx echo.Context) error {
 		return ctx.JSON(http.StatusInternalServerError, &getBusinessesResponse{Message: internalError})
 	}
 
-	return ctx.JSON(http.StatusCreated, &getBusinessesResponse{
+	return ctx.JSON(http.StatusOK, &getBusinessesResponse{
 		Businesses: businesses,
 		Message:    "businesses retrieved.",
 	})
