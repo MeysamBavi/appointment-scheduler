@@ -29,3 +29,6 @@ $RECYCLE.BIN/
 .tmp
 .idea
 .vscode
+
+# SonarQube
+.scannerwork
