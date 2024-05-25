@@ -13,16 +13,16 @@ func main() {
 	})
 	docHandler := v5emb.New(
 		"Appointment Scheduler",
-		"/openapi.json",
-		"/",
+		"/docs/openapi.json",
+		"/docs/",
 	)
 	e.Group(
-		"/*",
+		"/docs/*",
 		cors,
 		func(next echo.HandlerFunc) echo.HandlerFunc {
 			return echo.WrapHandler(docHandler)
 		},
 	)
-	e.File("/openapi.json", "./openapi.json", cors)
+	e.File("/docs/openapi.json", "./openapi.json", cors)
 	e.Logger.Fatal(e.Start(":8080"))
 }
