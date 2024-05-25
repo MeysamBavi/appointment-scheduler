@@ -4,8 +4,7 @@ import (
 	"fmt"
 	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/httpserver"
 	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/jwt"
-
-	"github.com/labstack/echo/v4/middleware"
+	"github.com/MeysamBavi/appointment-scheduler/backend/src/the-wall/internal/repo"
 
 	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/clients/kvstore"
 	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/clients/notification"
@@ -14,8 +13,8 @@ import (
 )
 
 type Config struct {
-	Port       int
-	EnableCORS bool
+	Port int
+	CORS httpserver.CORSConfig
 }
 
 type HTTPService struct {
@@ -24,6 +23,7 @@ type HTTPService struct {
 
 	otpClient clients.OTP
 	jwtSdk    *jwt.JWT
+	userRepo  repo.User
 }
 
 func NewHTTPService(
@@ -31,17 +31,17 @@ func NewHTTPService(
 	kvStore kvstore.KVStore,
 	notificator notification.Notificator,
 	jwtSdk *jwt.JWT,
+	userRepo repo.User,
 ) *HTTPService {
 	e := echo.New()
-	if config.EnableCORS {
-		e.Use(middleware.CORS())
-	}
+	e.Use(httpserver.CORSMiddleware(config.CORS))
 	service := &HTTPService{
 		server: e,
 		config: config,
 
 		otpClient: clients.NewOTPClient(kvStore, notificator),
 		jwtSdk:    jwtSdk,
+		userRepo:  userRepo,
 	}
 
 	initRoutes(e, service)
@@ -54,6 +54,7 @@ func initRoutes(e *echo.Echo, service *HTTPService) {
 	e.POST("/otp/validate", service.validateOTP)
 	e.GET("/authenticate", service.authenticateRequest)
 	e.POST("/test", service.test, httpserver.JWTMiddleware(service.jwtSdk))
+	e.GET("/users", service.getUsers)
 }
 
 func (s *HTTPService) Start() {

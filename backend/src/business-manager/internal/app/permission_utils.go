@@ -30,7 +30,7 @@ func checkUserIsBusinessOwner(ctx echo.Context, db *gorm.DB, businessID uint) (b
 		return false, err
 	}
 
-	return business.UserID == uint(userID), nil
+	return business.UserID == userID, nil
 }
 
 func handleBusinessOwnerPermissionError(err error) (string, int) {

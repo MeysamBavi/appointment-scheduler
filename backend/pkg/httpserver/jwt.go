@@ -38,11 +38,11 @@ func JWTMiddleware(jwt *jwt.JWT) echo.MiddlewareFunc {
 	}
 }
 
-func GetUserId(c echo.Context) (int32, bool) {
+func GetUserId(c echo.Context) (uint, bool) {
 	val := c.Get(userIdContextKey)
 	if val == nil {
 		return 0, false
 	}
-	id, ok := val.(int32)
+	id, ok := val.(uint)
 	return id, ok
 }
