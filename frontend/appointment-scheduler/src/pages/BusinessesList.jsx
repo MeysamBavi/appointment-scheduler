@@ -8,6 +8,7 @@ import {
   TextField,
   Paper,
   SvgIcon,
+  IconButton,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -15,7 +16,7 @@ import Layout from "../components/LayOut";
 import { useEffect, useState } from "react";
 import Icon from "react-multi-date-picker/components/icon";
 import Edit from "@mui/icons-material/Edit";
-import { readBusiness } from "../services/ApiService";
+import { deleteBusiness, readBusiness } from "../services/ApiService";
 
 const testData = [
   {
@@ -114,6 +115,10 @@ function BusinessesList() {
   //     setBusinessesList(rbs);
   //   };
 
+  const handleDeleteBusiness = (i) => {
+    deleteBusiness(i);
+  };
+
   useEffect(() => {
     readBusiness().then((data) => setBusinessesList(data));
   });
@@ -160,8 +165,12 @@ function BusinessesList() {
                 <Typography>{item["Address"]}</Typography>
               </Grid>
               <Grid item>
-                <EditIcon color="primary" sx={{ ml: 1 }}></EditIcon>
-                <DeleteIcon color="error"></DeleteIcon>
+                <IconButton>
+                  <EditIcon color="primary" sx={{ ml: 1 }} />
+                </IconButton>
+                <IconButton onClick={() => handleDeleteBusiness(item["ID"])}>
+                  <DeleteIcon color="error" />
+                </IconButton>
               </Grid>
             </Grid>
           </Paper>

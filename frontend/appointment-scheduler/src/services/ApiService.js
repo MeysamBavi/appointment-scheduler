@@ -29,6 +29,8 @@ export const validateOTP = async (phoneNumber, otp) => {
 // ----------------------------------------------------- business crud
 export const createBusiness = async (businessData) => {
   try {
+    axios.defaults.headers.common["Authorization"] =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTY2NzEzNzUsImp0aSI6ImQxMTg1MzRjLWJhYzItNGEwOC05ZjI3LTkwMGMxYzdkMGE3OCIsInBob25lX251bWJlciI6IjA5OTA0NjE0MTE2IiwidXNlcl9pZCI6MH0.UTRxysPQuKFzxemVwvB9-9yQb75um8epQYuodNfo3ME";
     const reqbod = {
       name: businessData["businessName"],
       address: businessData["businessAddress"],
@@ -50,6 +52,16 @@ export const readBusiness = async () => {
     return response.data["businesses"];
   } catch (error) {
     throw new Error(`Error in read business: ${error}`);
+  }
+};
+
+export const deleteBusiness = async (i) => {
+  try {
+    const response = await axios.delete(
+      apiConfig.businessesListUrl() + "/" + i
+    );
+  } catch (error) {
+    throw new Error(`Error in delete business: ${error}`);
   }
 };
 
