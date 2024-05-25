@@ -186,7 +186,7 @@ function BusinessProfile() {
                   }
                 >
                   <Stack spacing={2} textAlign={"right"} fontSize={"small"}>
-                    <label variant="h6">: از ساعت</label>
+                    <Typography>: از ساعت</Typography>
                     <Calendar
                       disableDayPicker
                       format="HH:mm A"
@@ -204,7 +204,7 @@ function BusinessProfile() {
                     />
                   </Stack>
                   <Stack spacing={2} textAlign={"right"} fontSize={"small"}>
-                    <label variant="h6">: تا ساعت</label>
+                    <Typography>: تا ساعت</Typography>
                     <Calendar
                       disableDayPicker
                       format="HH:mm A"
