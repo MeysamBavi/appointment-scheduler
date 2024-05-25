@@ -7,13 +7,12 @@ import (
 	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/jwt"
 	"github.com/MeysamBavi/appointment-scheduler/backend/src/business-manager/internal/models"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 	"gorm.io/gorm"
 )
 
 type Config struct {
-	Port       int
-	EnableCORS bool
+	Port int
+	CORS httpserver.CORSConfig
 }
 
 type HTTPService struct {
@@ -30,9 +29,7 @@ func NewHTTPService(
 	db *gorm.DB,
 ) *HTTPService {
 	e := echo.New()
-	if config.EnableCORS {
-		e.Use(middleware.CORS())
-	}
+	e.Use(httpserver.CORSMiddleware(config.CORS))
 	service := &HTTPService{
 		server: e,
 		config: config,
