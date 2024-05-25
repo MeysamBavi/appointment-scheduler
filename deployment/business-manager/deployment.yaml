@@ -13,7 +13,6 @@ spec:
       labels:
         app: business-manager
     spec:
-      automountServiceAccountToken: false
       containers:
         - name: business-manager
           image: "ghcr.io/meysambavi/business-manager:28"
@@ -24,10 +23,6 @@ spec:
           volumeMounts:
             - mountPath: /etc/config
               name: config
-          resources:
-            limits:
-              memory: 100Mi
-              cpu: 500m
       volumes:
         - name: config
           configMap:

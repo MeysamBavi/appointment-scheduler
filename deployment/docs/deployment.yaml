@@ -13,7 +13,6 @@ spec:
       labels:
         app: docs
     spec:
-      automountServiceAccountToken: false
       containers:
         - name: docs
           image: "ghcr.io/meysambavi/docs:38"
@@ -24,10 +23,6 @@ spec:
           volumeMounts:
             - mountPath: /etc/config
               name: config
-          resources:
-            limits:
-              memory: 100Mi
-              cpu: 500m
       volumes:
         - name: config
           configMap:
