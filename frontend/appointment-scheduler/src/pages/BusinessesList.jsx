@@ -12,9 +12,10 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import Layout from "../components/LayOut";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Icon from "react-multi-date-picker/components/icon";
 import Edit from "@mui/icons-material/Edit";
+import { readBusiness } from "../services/ApiService";
 
 const testData = [
   {
@@ -106,6 +107,16 @@ const testData = [
 
 function BusinessesList() {
   const [searchString, setSearchString] = useState("");
+  const [businessesList, setBusinessesList] = useState([]);
+
+  //   const handleBusinessesList = () => {
+  //     const rbs = readBusiness();
+  //     setBusinessesList(rbs);
+  //   };
+
+  useEffect(() => {
+    readBusiness().then((data) => setBusinessesList(data));
+  });
 
   return (
     <Layout>
@@ -130,7 +141,7 @@ function BusinessesList() {
 
         <Box height={20}></Box>
 
-        {testData.map((item, index) => (
+        {businessesList.map((item, index) => (
           <Paper
             elevation={3}
             sx={{ height: 50, mb: 1, py: 2, px: 2 }}
@@ -146,7 +157,6 @@ function BusinessesList() {
                   <Typography variant="h6">{item["Name"]}</Typography>
                   <Button disabled>{item["ServiceType"]["Name"]}</Button>
                 </Grid>
-
                 <Typography>{item["Address"]}</Typography>
               </Grid>
               <Grid item>

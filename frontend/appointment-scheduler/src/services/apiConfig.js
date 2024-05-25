@@ -26,7 +26,7 @@ export default class apiConfig {
     return `${this.baseUrl()}/business-manager`;
   }
 
-  static userUrl() {
+  static businessesListUrl() {
     return `${this.businessUrl()}/businesses`;
   }
 
