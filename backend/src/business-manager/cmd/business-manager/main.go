@@ -2,6 +2,9 @@ package main
 
 import (
 	"fmt"
+	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/config"
+	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/postgres"
+	"log"
 
 	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/jwt"
 	"github.com/MeysamBavi/appointment-scheduler/backend/src/business-manager/internal/app"
@@ -10,13 +13,18 @@ import (
 )
 
 func main() {
+	cfg := config.Load()
+	db, err := postgres.Connect(cfg.Postgres)
+	if err != nil {
+		log.Fatal("could not connect to postgres", err)
+	}
 	service := app.NewHTTPService(
 		app.Config{
-			Port:       8080,
-			EnableCORS: true,
+			Port: 8080,
+			CORS: cfg.CORS,
 		},
 		jwt.NewJWT("sth"),
-		connectDatabase(),
+		db,
 	)
 
 	service.Start()
