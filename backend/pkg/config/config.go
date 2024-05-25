@@ -28,7 +28,7 @@ func Default() Config {
 			Origins: nil,
 		},
 		Postgres: postgres.Config{
-			Host:               "pg",
+			Host:               "localhost",
 			Port:               "5432",
 			User:               "postgres",
 			Password:           "postgres",
