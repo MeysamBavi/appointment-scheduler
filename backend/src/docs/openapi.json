@@ -1,0 +1,380 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Appointment Scheduler API",
+    "description": "An OpenAPI documentation for The Appointment Scheduler project's RESTful API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/api",
+      "description": "Development server"
+    }
+  ],
+  "paths": {
+    "/auth/otp/send": {
+      "post": {
+        "summary": "Send OTP Code",
+        "description": "Send an OTP code to the provided phone number.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "phone_number": {
+                    "type": "string",
+                    "description": "The phone number to which the OTP code will be sent."
+                  }
+                },
+                "example": {
+                  "phone_number": "09123123123"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "A message indicating the success of the operation."
+                    }
+                  },
+                  "example": {
+                    "message": "Otp code sent. Check your phone."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/otp/validate": {
+      "post": {
+        "summary": "Validate OTP Code",
+        "description": "Validate the provided OTP code.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "phone_number": {
+                    "type": "string",
+                    "description": "The phone number associated with the OTP code."
+                  },
+                  "otp_code": {
+                    "type": "string",
+                    "description": "The OTP code to be validated."
+                  }
+                },
+                "example": {
+                  "phone_number": "09123123123",
+                  "otp_code": "123456"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "A message indicating the success of the operation."
+                    }
+                  },
+                  "example": {
+                    "message": "OTP code validated successfully."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/authenticate": {
+      "get": {
+        "summary": "Authenticate Request",
+        "description": "Authenticate the request using JWT token.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "A message indicating the success of the authentication."
+                    }
+                  },
+                  "example": {
+                    "message": "Authentication successful."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/test": {
+      "post": {
+        "summary": "Test Endpoint",
+        "description": "A test endpoint.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "A message indicating the success of the operation."
+                    }
+                  },
+                  "example": {
+                    "message": "Test endpoint successful."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/service_types": {
+      "get": {
+        "summary": "Get Service Types",
+        "description": "Retrieve a list of service types.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "description": "Service type ID."
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Service type name."
+                      }
+                    },
+                    "example": {
+                      "id": 1,
+                      "name": "service_type1"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/businesses/{business_id}/employees": {
+      "post": {
+        "summary": "Create Employee",
+        "description": "Create a new employee for a business.",
+        "parameters": [
+          {
+            "name": "business_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the business to add the employee to."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Name of the employee."
+                  },
+                  "role": {
+                    "type": "string",
+                    "description": "Role of the employee."
+                  }
+                },
+                "example": {
+                  "name": "John Doe",
+                  "role": "Manager"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "description": "Employee ID."
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Name of the employee."
+                    },
+                    "role": {
+                      "type": "string",
+                      "description": "Role of the employee."
+                    }
+                  },
+                  "example": {
+                    "id": 1,
+                    "name": "John Doe",
+                    "role": "Manager"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Get Employees",
+        "description": "Retrieve a list of employees for a business.",
+        "parameters": [
+          {
+            "name": "business_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the business to retrieve employees for."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "description": "Employee ID."
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Name of the employee."
+                      },
+                      "role": {
+                        "type": "string",
+                        "description": "Role of the employee."
+                      }
+                    },
+                    "example": {
+                      "id": 1,
+                      "name": "John Doe",
+                      "role": "Manager"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/businesses/{business_id}/employees/{employee_id}": {
+      "get": {
+        "summary": "Get Employee",
+        "description": "Retrieve a specific employee by ID.",
+        "parameters": [
+          {
+            "name": "business_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the business."
+          },
+          {
+            "name": "employee_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the employee."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "description": "Employee ID."
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Name of the employee."
+                    },
+                    "role": {
+                      "type": "string",
+                      "description": "Role of the employee."
+                    }
+                  },
+                  "example": {
+                    "id": 1,
+                    "name": "John Doe",
+                    "role": "Manager"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

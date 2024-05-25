@@ -22,6 +22,10 @@ data:
                 auth_request /api/auth/authenticate;
                 proxy_pass http://the-wall/test;
             }
+    
+            location /docs/ {
+                proxy_pass http://docs/;
+            }
 
             location / {
                 proxy_pass http://frontend/;
@@ -38,5 +42,9 @@ data:
 
         upstream frontend {
             server frontend;
+        }
+    
+        upstream docs {
+            server docs;
         }
     }
