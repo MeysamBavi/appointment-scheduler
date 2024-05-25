@@ -1,7 +1,7 @@
 import { Component, useState } from "react";
 import Layout from "../components/LayOut";
 import Debug from "../components/Debug";
-import "../styles/BusinessProfilePage.css";
+import "../styles/BusinessProfile.css";
 import {
   Box,
   Grid,
