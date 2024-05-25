@@ -13,6 +13,7 @@ spec:
       labels:
         app: pg
     spec:
+      automountServiceAccountToken: false
       containers:
         - name: pg
           image: 'postgres:15'
@@ -22,3 +23,7 @@ spec:
           env:
             - name: POSTGRES_PASSWORD
               value: postgres
+          resources:
+            limits:
+              memory: 100Mi
+              cpu: 500m

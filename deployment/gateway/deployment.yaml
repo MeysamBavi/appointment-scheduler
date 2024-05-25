@@ -13,6 +13,7 @@ spec:
       labels:
         app: gateway
     spec:
+      automountServiceAccountToken: false
       containers:
         - name: gateway
           image: "nginx"
@@ -23,6 +24,10 @@ spec:
           volumeMounts:
             - mountPath: /etc/nginx
               name: config
+          resources:
+            limits:
+              memory: 100Mi
+              cpu: 500m
       volumes:
         - name: config
           configMap:

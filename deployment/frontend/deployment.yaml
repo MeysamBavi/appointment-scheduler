@@ -13,6 +13,7 @@ spec:
       labels:
         app: frontend
     spec:
+      automountServiceAccountToken: false
       containers:
         - name: frontend
           image: "ghcr.io/meysambavi/frontend:13"
@@ -23,6 +24,10 @@ spec:
           volumeMounts:
             - mountPath: /etc/config
               name: config
+          resources:
+            limits:
+              memory: 100Mi
+              cpu: 500m
       volumes:
         - name: config
           configMap:

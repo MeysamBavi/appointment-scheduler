@@ -13,6 +13,7 @@ spec:
       labels:
         app: the-wall
     spec:
+      automountServiceAccountToken: false
       containers:
         - name: the-wall
           image: "ghcr.io/meysambavi/the-wall:10"
@@ -23,6 +24,10 @@ spec:
           volumeMounts:
             - mountPath: /etc/config
               name: config
+          resources:
+            limits:
+              memory: 100Mi
+              cpu: 500m
       volumes:
         - name: config
           configMap:
