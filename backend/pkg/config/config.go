@@ -2,6 +2,7 @@ package config
 
 import (
 	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/httpserver"
+	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/postgres"
 	"github.com/knadh/koanf/parsers/yaml"
 	"github.com/knadh/koanf/providers/file"
 	"github.com/knadh/koanf/providers/structs"
@@ -16,7 +17,8 @@ const (
 )
 
 type Config struct {
-	CORS httpserver.CORSConfig `config:"cors"`
+	CORS     httpserver.CORSConfig `config:"cors"`
+	Postgres postgres.Config       `config:"postgres"`
 }
 
 func Default() Config {
@@ -24,6 +26,15 @@ func Default() Config {
 		CORS: httpserver.CORSConfig{
 			Enable:  true,
 			Origins: nil,
+		},
+		Postgres: postgres.Config{
+			Host:               "pg",
+			Port:               "5432",
+			User:               "postgres",
+			Password:           "postgres",
+			DBName:             "appointment_scheduler",
+			MaxIdleConnections: 1,
+			MaxConnections:     5,
 		},
 	}
 }
