@@ -19,4 +19,10 @@ COPY backend/src/docs/openapi.json .
 
 EXPOSE 8080
 
+RUN addgroup --system nonroot \
+    && adduser --system nonroot \
+    && adduser nonroot nonroot
+
+USER nonroot
+
 CMD ["./docs"]

@@ -18,4 +18,10 @@ COPY --from=build /app/the-wall .
 
 EXPOSE 8080
 
+RUN addgroup --system nonroot \
+    && adduser --system nonroot \
+    && adduser nonroot nonroot
+
+USER nonroot
+
 CMD ["./the-wall"]
