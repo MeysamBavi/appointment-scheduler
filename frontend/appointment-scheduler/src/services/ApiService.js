@@ -29,8 +29,6 @@ export const validateOTP = async (phoneNumber, otp) => {
 // ----------------------------------------------------- business crud
 export const createBusiness = async (businessData) => {
   try {
-    axios.defaults.headers.common["Authorization"] =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTY2NzEzNzUsImp0aSI6ImQxMTg1MzRjLWJhYzItNGEwOC05ZjI3LTkwMGMxYzdkMGE3OCIsInBob25lX251bWJlciI6IjA5OTA0NjE0MTE2IiwidXNlcl9pZCI6MH0.UTRxysPQuKFzxemVwvB9-9yQb75um8epQYuodNfo3ME";
     const reqbod = {
       name: businessData["businessName"],
       address: businessData["businessAddress"],
@@ -44,14 +42,32 @@ export const createBusiness = async (businessData) => {
   }
 };
 
-export const readBusiness = async () => {
+export const readBusinesses = async () => {
   try {
-    axios.defaults.headers.common["Authorization"] =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTY2NzEzNzUsImp0aSI6ImQxMTg1MzRjLWJhYzItNGEwOC05ZjI3LTkwMGMxYzdkMGE3OCIsInBob25lX251bWJlciI6IjA5OTA0NjE0MTE2IiwidXNlcl9pZCI6MH0.UTRxysPQuKFzxemVwvB9-9yQb75um8epQYuodNfo3ME";
     const response = await axios.get(apiConfig.businessesListUrl());
     return response.data["businesses"];
   } catch (error) {
+    throw new Error(`Error in read businesses: ${error}`);
+  }
+};
+
+export const readBusiness = async (i) => {
+  try {
+    const response = await axios.get(apiConfig.businessesListUrl() + "/" + i);
+    return response.data["business"];
+  } catch (error) {
     throw new Error(`Error in read business: ${error}`);
+  }
+};
+
+export const updateBusiness = async (i, businessData) => {
+  try {
+    const response = await axios.put(
+      apiConfig.businessesListUrl() + "/" + i,
+      businessData
+    );
+  } catch (error) {
+    throw new Error(`Error in update business: ${error}`);
   }
 };
 
@@ -65,6 +81,7 @@ export const deleteBusiness = async (i) => {
   }
 };
 
+// ----------------------------------------------------- business type crud
 export const readBusinessTypes = async () => {
   try {
     const response = await axios.get(apiConfig.businessTypeUrl());

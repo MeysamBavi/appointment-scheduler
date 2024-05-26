@@ -16,7 +16,8 @@ import Layout from "../components/LayOut";
 import { useEffect, useState } from "react";
 import Icon from "react-multi-date-picker/components/icon";
 import Edit from "@mui/icons-material/Edit";
-import { deleteBusiness, readBusiness } from "../services/ApiService";
+import { deleteBusiness, readBusinesses } from "../services/ApiService";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const testData = [
   {
@@ -115,13 +116,16 @@ function BusinessesList() {
   //     setBusinessesList(rbs);
   //   };
 
+  const NavigateTo = useNavigate();
+
   const handleDeleteBusiness = (i) => {
     deleteBusiness(i);
   };
 
   useEffect(() => {
-    readBusiness().then((data) => setBusinessesList(data));
-  });
+    readBusinesses().then((data) => setBusinessesList(data));
+    console.log("something");
+  }, []);
 
   return (
     <Layout>
@@ -165,7 +169,13 @@ function BusinessesList() {
                 <Typography>{item["Address"]}</Typography>
               </Grid>
               <Grid item>
-                <IconButton>
+                <IconButton
+                  onClick={() =>
+                    NavigateTo("/business-profile", {
+                      state: { id: item["ID"] },
+                    })
+                  }
+                >
                   <EditIcon color="primary" sx={{ ml: 1 }} />
                 </IconButton>
                 <IconButton onClick={() => handleDeleteBusiness(item["ID"])}>
