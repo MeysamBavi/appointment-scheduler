@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: docs
-          image: "ghcr.io/meysambavi/docs:38"
+          image: "ghcr.io/meysambavi/docs:43"
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
