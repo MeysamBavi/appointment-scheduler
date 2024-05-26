@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: business-manager
-          image: "ghcr.io/meysambavi/business-manager:51"
+          image: "ghcr.io/meysambavi/business-manager:54"
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
