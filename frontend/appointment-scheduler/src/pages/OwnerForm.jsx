@@ -20,6 +20,7 @@ import DatePicker, { DateObject } from "react-multi-date-picker";
 import DatePanel from "react-multi-date-picker/plugins/date_panel";
 import TimePicker from "react-multi-date-picker/plugins/time_picker";
 import { Calendar } from "react-multi-date-picker";
+import { useNavigate } from "react-router-dom";
 
 import Layout from "../components/LayOut";
 import "../styles/OwnerForm.css";
@@ -27,6 +28,7 @@ import { createBusiness, readBusinessTypes } from "../services/ApiService";
 const OwnerForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedUnit, setSelectedUnit] = useState("min");
+  const NavigateTo = useNavigate();
 
   const [ownerInfo, setOwnerInfo] = useState({
     firstName: "",
@@ -75,6 +77,7 @@ const OwnerForm = () => {
     console.log("Business Info:", businessInfo);
     // console.log("Appointments Info:", appointmentsInfo);
     createBusiness(businessInfo);
+    NavigateTo('/businesses-list');
   };
 
   const handleBusinessTypes = async () => {
