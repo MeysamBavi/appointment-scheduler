@@ -1,4 +1,4 @@
-import { Component, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "../components/LayOut";
 import Debug from "../components/Debug";
 import "../styles/BusinessProfile.css";
@@ -47,8 +47,6 @@ const testData = {
   UserID: 0,
 };
 
-// Object { ID: 4, CreatedAt: "2024-05-25T19:57:39.66707Z", UpdatedAt: "2024-05-25T19:57:39.66707Z", DeletedAt: null, Name: "آرایشگاه زیبا", Address: "خوابگاه", ServiceType: {…}, ServiceTypeID: 1, UserID: 0 }
-
 function BusinessProfile() {
   const isDesktop = useMediaQuery("(min-width:600px)");
   const [businessInfo, setBusinessInfo] = useState({});
@@ -78,7 +76,7 @@ function BusinessProfile() {
   return (
     <Layout>
       <Container className="todortl" sx={{ px: 1, py: 3 }}>
-        <Grid container justifyContent={"space-between"}>
+        <Grid container justifyContent="space-between">
           <Grid item>
             <Typography variant="h5" sx={{ mb: 2 }}>
               پروفایل
@@ -121,8 +119,6 @@ function BusinessProfile() {
           ></TextField>
         </FormInformationProperty>
 
-        {/* TODO: create persian components
-        persian needs many settings in react :/ */}
         <FormInformationProperty propertyName="نوع">
           <Autocomplete
             options={businessTypes}
@@ -140,54 +136,30 @@ function BusinessProfile() {
                 sx={{
                   "& .MuiAutocomplete-inputRoot": {
                     "& .MuiAutocomplete-input": {
-                  my: 1,
+                      my: 1,
+                    },
+                  },
                 }}
               />
-              <TextField
-                placeholder="نام خانوادگی"
-                defaultValue={businessInfo.owner.family}
-                fullWidth
-                sx={{ my: 1 }}
-              />
-              <TextField
-                type="number"
-                placeholder="شماره تلفن"
-                defaultValue={businessInfo.owner.phoneNumber}
-                fullWidth
-                sx={{ my: 1 }}
-              />
-            </Container>
-          </Paper>
+            )}
+            fullWidth
+            getOptionLabel={(option) => option.Name}
+          />
         </FormInformationProperty>
 
-        {/* TODO: make calendar and times as one component
-        this is just copy & paste */}
         <FormInformationProperty propertyName="اطلاعات نوبت ها">
           <Paper variant="outlined" sx={{ px: 1, py: 2 }}>
             <Stack spacing={2}>
               <Stack
-                direction={"row"}
+                direction={isDesktop ? "row" : "column"}
                 spacing={3}
-                style={
-                  isDesktop
-                    ? {
-                        alignItems: "center",
-                        justifyContent: "space-around",
-                      }
-                    : {
-                        alignItems: "center",
-                        justifyContent: "space-around",
-                        display: "flex",
-                        flexDirection: "column",
-                      }
-                }
+                alignItems="center"
+                justifyContent={isDesktop ? "space-around" : "flex-start"}
               >
                 <Calendar
                   editable
-                  // multiple="true"
-                  range="true"
-                  showOtherDays="true"
-                  // sort
+                  range
+                  showOtherDays
                   value={appointmentsInfo.dateSelection}
                   placeholder="تاریخ شروع رویداد"
                   format="YYYY/MM/DD"
@@ -202,18 +174,8 @@ function BusinessProfile() {
                   locale={persian_fa}
                 />
 
-                <Stack
-                  spacing={2}
-                  style={
-                    isDesktop
-                      ? {}
-                      : {
-                          marginLeft: "0",
-                          marginTop: "15px",
-                        }
-                  }
-                >
-                  <Stack spacing={2} textAlign={"right"} fontSize={"small"}>
+                <Stack spacing={2} style={{ marginLeft: isDesktop ? 0 : "0px", marginTop: isDesktop ? 0 : "15px" }}>
+                  <Stack spacing={2} textAlign="right" fontSize="small">
                     <Typography>: از ساعت</Typography>
                     <Calendar
                       disableDayPicker
@@ -231,7 +193,7 @@ function BusinessProfile() {
                       }
                     />
                   </Stack>
-                  <Stack spacing={2} textAlign={"right"} fontSize={"small"}>
+                  <Stack spacing={2} textAlign="right" fontSize="small">
                     <Typography>: تا ساعت</Typography>
                     <Calendar
                       disableDayPicker
@@ -251,7 +213,7 @@ function BusinessProfile() {
                   </Stack>
                 </Stack>
               </Stack>
-              <Stack direction={"row"} spacing={2}>
+              <Stack direction="row" spacing={2}>
                 <TextField
                   label={`مدت هر نوبت`}
                   type="number"
@@ -267,31 +229,29 @@ function BusinessProfile() {
                         paddingRight: "unset",
                       },
                     },
-                  },
-                  "& .MuiAutocomplete-clearIndicator": {
-                    marginLeft: 0,
-                    marginRight: "0px",
-                  },
-                  "& .MuiAutocomplete-popupIndicator": {
-                    marginRight: 0,
-                  },
-                }}
-                InputLabelProps={{
-                  sx: {
-                    transformOrigin: "right",
-                    left: "inherit",
-                    right: "1.75rem",
-                    fontSize: "small",
-                    color: "#807D7B",
-                    fontWeight: 400,
-                    overflow: "unset",
-                  },
-                }}
-              />
-            )}
-            fullWidth
-            getOptionLabel={(option) => option.Name}
-          />
+                    "& .MuiAutocomplete-clearIndicator": {
+                      marginLeft: 0,
+                      marginRight: "0px",
+                    },
+                    "& .MuiAutocomplete-popupIndicator": {
+                      marginRight: 0,
+                    },
+                  }}
+                  InputLabelProps={{
+                    sx: {
+                      transformOrigin: "right",
+                      left: "inherit",
+                      right: "1.75rem",
+                      fontSize: "small",
+                      color: "#807D7B",
+                      fontWeight: 400,
+                      overflow: "unset",
+                    },
+                  }}
+                />
+              </Stack>
+            </Stack>
+          </Paper>
         </FormInformationProperty>
       </Container>
     </Layout>
