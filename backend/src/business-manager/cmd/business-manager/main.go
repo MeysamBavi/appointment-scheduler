@@ -20,8 +20,9 @@ func main() {
 	}
 	service := app.NewHTTPService(
 		app.Config{
-			Port: 8080,
-			CORS: cfg.CORS,
+			Port:           8080,
+			CORS:           cfg.CORS,
+			TheWallAddress: cfg.TheWallAddress,
 		},
 		jwt.NewJWT("sth"),
 		db,
