@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: the-wall
-          image: "ghcr.io/meysambavi/the-wall:40"
+          image: "ghcr.io/meysambavi/the-wall:45"
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
