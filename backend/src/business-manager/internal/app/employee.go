@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/MeysamBavi/appointment-scheduler/backend/src/the-wall/pkg/clients"
+	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -77,6 +78,7 @@ func serializeGetEmployeesResponse(wallClient *clients.TheWall, employees []mode
 	for i, employee := range employees {
 		user, err := wallClient.GetUserById(ctx, employee.UserID)
 		if err != nil {
+			log.Println(err)
 			continue
 		}
 		serializedEmployees[i] = employeeResponse{
