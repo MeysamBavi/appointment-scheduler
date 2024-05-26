@@ -120,6 +120,7 @@ function BusinessesList() {
 
   const handleDeleteBusiness = (i) => {
     deleteBusiness(i);
+    readBusinesses().then((data) => setBusinessesList(data));
   };
 
   useEffect(() => {
