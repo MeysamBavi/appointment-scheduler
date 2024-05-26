@@ -5,8 +5,7 @@ WORKDIR /app
 COPY backend/go.mod backend/go.sum ./
 RUN go mod download
 
-COPY backend/src/business-manager src/business-manager
-COPY backend/pkg pkg
+COPY backend/ ./
 
 RUN go build -o business-manager ./src/business-manager/cmd/business-manager
 

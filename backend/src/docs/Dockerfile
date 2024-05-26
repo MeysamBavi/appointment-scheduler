@@ -5,8 +5,7 @@ WORKDIR /app
 COPY backend/go.mod backend/go.sum ./
 RUN go mod download
 
-COPY backend/src/docs src/docs
-COPY backend/pkg pkg
+COPY backend/ ./
 
 RUN go build -o docs ./src/docs
 

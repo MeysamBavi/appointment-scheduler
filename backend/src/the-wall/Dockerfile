@@ -5,8 +5,7 @@ WORKDIR /app
 COPY backend/go.mod backend/go.sum ./
 RUN go mod download
 
-COPY backend/src/the-wall src/the-wall
-COPY backend/pkg pkg
+COPY backend/ ./
 
 RUN go build -o the-wall ./src/the-wall/cmd/the-wall
 

@@ -1,9 +1,13 @@
 package app
 
 import (
+	"context"
 	"errors"
+	"fmt"
+	"github.com/MeysamBavi/appointment-scheduler/backend/src/the-wall/pkg/clients"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/MeysamBavi/appointment-scheduler/backend/src/business-manager/internal/handlers"
 	"github.com/MeysamBavi/appointment-scheduler/backend/src/business-manager/internal/models"
@@ -66,12 +70,18 @@ type employeeResponse struct {
 	Name string `json:"name"`
 }
 
-func serializeGetEmployeesResponse(employees []models.Employee) *getEmployeesResponse {
+func serializeGetEmployeesResponse(wallClient *clients.TheWall, employees []models.Employee) *getEmployeesResponse {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 	serializedEmployees := make([]employeeResponse, len(employees))
 	for i, employee := range employees {
+		user, err := wallClient.GetUserById(ctx, employee.UserID)
+		if err != nil {
+			continue
+		}
 		serializedEmployees[i] = employeeResponse{
 			ID:   employee.ID,
-			Name: "employee.ID", // FIXME
+			Name: strings.TrimSpace(fmt.Sprintf("%s %s", user.Firstname, user.Lastname)),
 		}
 	}
 	return &getEmployeesResponse{
@@ -102,7 +112,7 @@ func (s *HTTPService) GetEmployees(ctx echo.Context) error {
 		return ctx.JSON(http.StatusInternalServerError, &getEmployeesResponse{Message: internalError})
 	}
 
-	return ctx.JSON(http.StatusOK, serializeGetEmployeesResponse(employees))
+	return ctx.JSON(http.StatusOK, serializeGetEmployeesResponse(s.wallClient, employees))
 }
 
 type getEmployeeRequest struct {

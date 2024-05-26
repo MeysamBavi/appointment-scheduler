@@ -17,8 +17,9 @@ const (
 )
 
 type Config struct {
-	CORS     httpserver.CORSConfig `config:"cors"`
-	Postgres postgres.Config       `config:"postgres"`
+	CORS           httpserver.CORSConfig `config:"cors"`
+	Postgres       postgres.Config       `config:"postgres"`
+	TheWallAddress string                `config:"the_wall_address"`
 }
 
 func Default() Config {
@@ -36,6 +37,7 @@ func Default() Config {
 			MaxIdleConnections: 1,
 			MaxConnections:     5,
 		},
+		TheWallAddress: "http://the-wall",
 	}
 }
 
