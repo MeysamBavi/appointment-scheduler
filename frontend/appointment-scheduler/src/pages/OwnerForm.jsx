@@ -23,6 +23,7 @@ import { Calendar } from "react-multi-date-picker";
 
 import Layout from "../components/LayOut";
 import "../styles/OwnerForm.css";
+import { createBusiness, readBusinessTypes } from "../services/ApiService";
 const OwnerForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedUnit, setSelectedUnit] = useState("min");
@@ -33,8 +34,11 @@ const OwnerForm = () => {
     phoneNumber: "",
   });
 
+  const [businessTypes, setBusinessTypes] = useState([]);
+
   const [businessInfo, setBusinessInfo] = useState({
     businessName: "",
+    businessAddress: "",
     businessType: null,
   });
 
@@ -43,6 +47,7 @@ const OwnerForm = () => {
     hoursSelection: [new DateObject(), new DateObject()],
     appointmentsLength: "",
   });
+
   const handleOwnerInfoChange = (e) => {
     setOwnerInfo({
       ...ownerInfo,
@@ -66,10 +71,18 @@ const OwnerForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Owner Info:", ownerInfo);
+    // console.log("Owner Info:", ownerInfo);
     console.log("Business Info:", businessInfo);
-    console.log("Appointments Info:", appointmentsInfo);
+    // console.log("Appointments Info:", appointmentsInfo);
+    createBusiness(businessInfo);
   };
+
+  const handleBusinessTypes = async () => {
+    const btypes = await readBusinessTypes();
+    console.log("something", btypes);
+    setBusinessTypes(btypes);
+  };
+
   const isDesktop = useMediaQuery("(min-width:600px)");
 
   const handleNext = () => {
@@ -253,10 +266,42 @@ const OwnerForm = () => {
                     }}
                   />
 
+                  <TextField
+                    label="آدرس"
+                    name="businessAddress"
+                    value={businessInfo.businessAddress}
+                    onChange={handleBusinessInfoChange}
+                    fullWidth
+                    sx={{
+                      "& input": {
+                        textAlign: "right",
+                      },
+                      "& .MuiAutocomplete-inputRoot": {
+                        "& .MuiAutocomplete-input": {
+                          "& input": {
+                            paddingRight: "unset",
+                          },
+                        },
+                      },
+                    }}
+                    InputLabelProps={{
+                      sx: {
+                        transformOrigin: "right",
+                        left: "inherit",
+                        right: "1.75rem",
+                        fontSize: "small",
+                        color: "#807D7B",
+                        fontWeight: 400,
+                        overflow: "unset",
+                      },
+                    }}
+                  />
+
                   <Autocomplete
-                    options={["املاک", "زیبایی", "سلامت", "موارد دیگر"]}
+                    options={businessTypes}
                     renderInput={(params) => (
                       <TextField
+                        onFocus={handleBusinessTypes}
                         {...params}
                         label="نوع کسب و کار"
                         fullWidth
@@ -296,8 +341,7 @@ const OwnerForm = () => {
                       setBusinessInfo({ ...businessInfo, businessType: value })
                     }
                     fullWidth
-                    getOptionLabel={(option) => option}
-                    isOptionEqualToValue={(option, value) => option === value}
+                    getOptionLabel={(option) => option.Name}
                   />
                 </Stack>
               )}

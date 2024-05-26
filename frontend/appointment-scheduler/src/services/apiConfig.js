@@ -1,5 +1,6 @@
 export default class apiConfig {
   static host = "http://135.125.116.88:80";
+  // static host = "http://localhost:8080";
 
   static baseUrl() {
     return `${this.host}/api`;
@@ -19,5 +20,17 @@ export default class apiConfig {
 
   static otpValidateUrl() {
     return `${this.otpBaseUrl()}/validate`;
+  }
+
+  static businessUrl() {
+    return `${this.baseUrl()}/business-manager`;
+  }
+
+  static businessesListUrl() {
+    return `${this.businessUrl()}/businesses`;
+  }
+
+  static businessTypeUrl() {
+    return `${this.businessUrl()}/service_types`;
   }
 }

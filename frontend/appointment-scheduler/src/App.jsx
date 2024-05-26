@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Landing from "./pages/Landing";
 import OwnerForm from "./pages/OwnerForm";
 import BusinessProfile from "./pages/BusinessProfile";
+import BusinessesList from "./pages/BusinessesList";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           path="/ownerCreateForm"
           element={<OwnerForm></OwnerForm>}
         />
+        <Route exact path="/businesses-list" element={<BusinessesList />} />
         <Route exact path="/business-profile" element={<BusinessProfile />} />
         <Route path="*" element={<NotFound></NotFound>} />
       </Routes>
