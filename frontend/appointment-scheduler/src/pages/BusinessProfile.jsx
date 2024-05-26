@@ -140,6 +140,127 @@ function BusinessProfile() {
                 sx={{
                   "& .MuiAutocomplete-inputRoot": {
                     "& .MuiAutocomplete-input": {
+                  my: 1,
+                }}
+              />
+              <TextField
+                placeholder="نام خانوادگی"
+                defaultValue={businessInfo.owner.family}
+                fullWidth
+                sx={{ my: 1 }}
+              />
+              <TextField
+                type="number"
+                placeholder="شماره تلفن"
+                defaultValue={businessInfo.owner.phoneNumber}
+                fullWidth
+                sx={{ my: 1 }}
+              />
+            </Container>
+          </Paper>
+        </FormInformationProperty>
+
+        {/* TODO: make calendar and times as one component
+        this is just copy & paste */}
+        <FormInformationProperty propertyName="اطلاعات نوبت ها">
+          <Paper variant="outlined" sx={{ px: 1, py: 2 }}>
+            <Stack spacing={2}>
+              <Stack
+                direction={"row"}
+                spacing={3}
+                style={
+                  isDesktop
+                    ? {
+                        alignItems: "center",
+                        justifyContent: "space-around",
+                      }
+                    : {
+                        alignItems: "center",
+                        justifyContent: "space-around",
+                        display: "flex",
+                        flexDirection: "column",
+                      }
+                }
+              >
+                <Calendar
+                  editable
+                  // multiple="true"
+                  range="true"
+                  showOtherDays="true"
+                  // sort
+                  value={appointmentsInfo.dateSelection}
+                  placeholder="تاریخ شروع رویداد"
+                  format="YYYY/MM/DD"
+                  onChange={(value) =>
+                    setAppointmentsInfo({
+                      ...appointmentsInfo,
+                      dateSelection: value,
+                    })
+                  }
+                  rangeHover
+                  calendar={persian}
+                  locale={persian_fa}
+                />
+
+                <Stack
+                  spacing={2}
+                  style={
+                    isDesktop
+                      ? {}
+                      : {
+                          marginLeft: "0",
+                          marginTop: "15px",
+                        }
+                  }
+                >
+                  <Stack spacing={2} textAlign={"right"} fontSize={"small"}>
+                    <Typography>: از ساعت</Typography>
+                    <Calendar
+                      disableDayPicker
+                      format="HH:mm A"
+                      plugins={[<TimePicker hideSeconds />]}
+                      value={appointmentsInfo.hoursSelection[0]}
+                      onChange={(_, value) =>
+                        setAppointmentsInfo({
+                          ...appointmentsInfo,
+                          hoursSelection: [
+                            value,
+                            appointmentsInfo.hoursSelection[1],
+                          ],
+                        })
+                      }
+                    />
+                  </Stack>
+                  <Stack spacing={2} textAlign={"right"} fontSize={"small"}>
+                    <Typography>: تا ساعت</Typography>
+                    <Calendar
+                      disableDayPicker
+                      format="HH:mm A"
+                      plugins={[<TimePicker hideSeconds />]}
+                      value={appointmentsInfo.hoursSelection[1]}
+                      onChange={(_, value) =>
+                        setAppointmentsInfo({
+                          ...appointmentsInfo,
+                          hoursSelection: [
+                            appointmentsInfo.hoursSelection[0],
+                            value,
+                          ],
+                        })
+                      }
+                    />
+                  </Stack>
+                </Stack>
+              </Stack>
+              <Stack direction={"row"} spacing={2}>
+                <TextField
+                  label={`مدت هر نوبت`}
+                  type="number"
+                  name="appointmentsLength"
+                  value={appointmentsInfo.appointmentsLength}
+                  onChange={handleAppointmentsInfoChange}
+                  fullWidth
+                  sx={{
+                    "& input": {
                       textAlign: "right",
                       right: "10px",
                       "& input": {

@@ -3,5 +3,5 @@
   src: url(../fonts/FontsFree-Net-ir_sans.ttf) format("truetype");
 }
 * {
-  font-family: 'IRANSans' !important;
+  font-family: 'IRANSans', serif !important;
 }

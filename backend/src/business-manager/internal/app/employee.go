@@ -3,11 +3,11 @@ package app
 import (
 	"errors"
 	"net/http"
+	"strings"
 
 	"github.com/MeysamBavi/appointment-scheduler/backend/src/business-manager/internal/handlers"
 	"github.com/MeysamBavi/appointment-scheduler/backend/src/business-manager/internal/models"
 	"github.com/labstack/echo/v4"
-	"gorm.io/gorm"
 )
 
 type createEmployeeRequest struct {
@@ -16,7 +16,6 @@ type createEmployeeRequest struct {
 }
 
 func (s *HTTPService) CreateEmployee(ctx echo.Context) error {
-	ctx.Logger().Error("here")
 	request := createEmployeeRequest{}
 	err := ctx.Bind(&request)
 	if err != nil {
@@ -43,7 +42,7 @@ func (s *HTTPService) CreateEmployee(ctx echo.Context) error {
 		UserID:     request.User,
 		BusinessID: request.Business,
 	}); err != nil {
-		if errors.Is(err, gorm.ErrDuplicatedKey) {
+		if strings.Contains(err.Error(), "duplicate key") {
 			return ctx.JSON(http.StatusConflict, &MessageResponse{"employee already exist."})
 		}
 		ctx.Logger().Error(err)
@@ -58,8 +57,27 @@ type getEmployeesRequest struct {
 }
 
 type getEmployeesResponse struct {
-	Message   string            `json:"message"`
-	Employees []models.Employee `json:"employees"`
+	Message   string             `json:"message"`
+	Employees []employeeResponse `json:"employees"`
+}
+
+type employeeResponse struct {
+	ID   uint   `json:"id"`
+	Name string `json:"name"`
+}
+
+func serializeGetEmployeesResponse(employees []models.Employee) *getEmployeesResponse {
+	serializedEmployees := make([]employeeResponse, len(employees))
+	for i, employee := range employees {
+		serializedEmployees[i] = employeeResponse{
+			ID:   employee.ID,
+			Name: "employee.ID", // FIXME
+		}
+	}
+	return &getEmployeesResponse{
+		Employees: serializedEmployees,
+		Message:   "businesses retrieved.",
+	}
 }
 
 func (s *HTTPService) GetEmployees(ctx echo.Context) error {
@@ -84,7 +102,7 @@ func (s *HTTPService) GetEmployees(ctx echo.Context) error {
 		return ctx.JSON(http.StatusInternalServerError, &getEmployeesResponse{Message: internalError})
 	}
 
-	return ctx.JSON(http.StatusOK, &getEmployeesResponse{Employees: employees, Message: "employees retrieved."})
+	return ctx.JSON(http.StatusOK, serializeGetEmployeesResponse(employees))
 }
 
 type getEmployeeRequest struct {

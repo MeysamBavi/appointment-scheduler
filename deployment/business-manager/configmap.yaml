@@ -6,3 +6,5 @@ data:
   config.yaml: |
     # the config file with yaml format
     mode: Debug
+    postgres:
+      host: pg

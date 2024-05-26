@@ -10,6 +10,7 @@ import {
   StepLabel,
   Select,
   MenuItem,
+  Typography,
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import { useMediaQuery } from "@mui/material";
@@ -396,7 +397,7 @@ const OwnerForm = () => {
                       }
                     >
                       <Stack spacing={2} textAlign={"right"} fontSize={"small"}>
-                        <label variant="h6">: از ساعت</label>
+                        <Typography variant="item">: از ساعت</Typography>
                         <Calendar
                           disableDayPicker
                           format="HH:mm A"
@@ -414,7 +415,7 @@ const OwnerForm = () => {
                         />
                       </Stack>
                       <Stack spacing={2} textAlign={"right"} fontSize={"small"}>
-                        <label variant="h6">: تا ساعت</label>
+                        <Typography variant="item">: تا ساعت</Typography>
                         <Calendar
                           disableDayPicker
                           format="HH:mm A"

@@ -1,10 +1,14 @@
 package core
 
 import (
+	"context"
 	"errors"
 	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/jwt"
+	"github.com/MeysamBavi/appointment-scheduler/backend/src/the-wall/internal/models"
+	"gorm.io/gorm"
 	"net/http"
 	"regexp"
+	"time"
 
 	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/clients/kvstore"
 	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/clients/notification"
@@ -112,7 +116,29 @@ func (s *HTTPService) validateOTP(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, otpIsInvalidResponse)
 	}
 
-	jwtToken, err := s.jwtSdk.GetSignedJWT(jwt.Payload{PhoneNumber: request.PhoneNumber})
+	ctx2, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	defer cancel()
+
+	user, err := s.userRepo.GetByPhoneNumber(ctx2, request.PhoneNumber)
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		ctx.Logger().Error(err)
+		return ctx.JSON(http.StatusInternalServerError, validateInternalErrorResponse)
+	}
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		u := models.User{
+			PhoneNumber: request.PhoneNumber,
+		}
+		err = s.userRepo.Create(ctx2, &u)
+		user = &u
+	}
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, validateInternalErrorResponse)
+	}
+
+	jwtToken, err := s.jwtSdk.GetSignedJWT(jwt.Payload{
+		UserId:      user.ID,
+		PhoneNumber: user.PhoneNumber,
+	})
 	if err != nil {
 		ctx.Logger().Error(err)
 		return ctx.JSON(http.StatusInternalServerError, validateInternalErrorResponse)
