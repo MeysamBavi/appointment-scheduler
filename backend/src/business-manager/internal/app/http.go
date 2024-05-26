@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"github.com/MeysamBavi/appointment-scheduler/backend/src/the-wall/pkg/clients"
 
 	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/httpserver"
 	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/jwt"
@@ -11,16 +12,18 @@ import (
 )
 
 type Config struct {
-	Port int
-	CORS httpserver.CORSConfig
+	Port           int
+	CORS           httpserver.CORSConfig
+	TheWallAddress string
 }
 
 type HTTPService struct {
 	server *echo.Echo
 	config Config
 
-	jwtSdk *jwt.JWT
-	db     *gorm.DB
+	jwtSdk     *jwt.JWT
+	db         *gorm.DB
+	wallClient *clients.TheWall
 }
 
 func NewHTTPService(
@@ -34,8 +37,9 @@ func NewHTTPService(
 		server: e,
 		config: config,
 
-		jwtSdk: jwtSdk,
-		db:     db,
+		jwtSdk:     jwtSdk,
+		db:         db,
+		wallClient: &clients.TheWall{Address: config.TheWallAddress},
 	}
 
 	initRoutes(e, service)

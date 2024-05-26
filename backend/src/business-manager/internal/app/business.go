@@ -42,7 +42,7 @@ func (s *HTTPService) CreateBusiness(ctx echo.Context) error {
 		Name:          request.Name,
 		Address:       request.Address,
 		ServiceTypeID: request.ServiceType,
-		UserID:        uint(userID),
+		UserID:        userID,
 	})
 	if err != nil {
 		ctx.Logger().Error(err)
