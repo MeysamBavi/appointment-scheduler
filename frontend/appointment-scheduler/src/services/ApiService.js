@@ -26,6 +26,17 @@ export const validateOTP = async (phoneNumber, otp) => {
     throw new Error(`Error validating OTP: ${error}`);
   }
 };
+//GET /businesses/<id:int>/employees
+export const getEmployees = async (businessesId) => {
+  try {
+    const response = await axios.get(apiConfig.getEmployees(businessesId), {
+      business_id: businessesId,
+    });
+    return response;
+  } catch (error) {
+    throw new Error(`Error getting employees: ${error}`);
+  }
+};
 
 // ----------------------------------------------------- business crud
 export const createBusiness = async (businessData) => {
