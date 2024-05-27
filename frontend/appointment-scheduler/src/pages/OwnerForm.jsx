@@ -10,6 +10,7 @@ import {
   StepLabel,
   Select,
   MenuItem,
+  Typography,
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import { useMediaQuery } from "@mui/material";
@@ -19,12 +20,15 @@ import DatePicker, { DateObject } from "react-multi-date-picker";
 import DatePanel from "react-multi-date-picker/plugins/date_panel";
 import TimePicker from "react-multi-date-picker/plugins/time_picker";
 import { Calendar } from "react-multi-date-picker";
+import { useNavigate } from "react-router-dom";
 
 import Layout from "../components/LayOut";
 import "../styles/OwnerForm.css";
+import { createBusiness, readBusinessTypes } from "../services/ApiService";
 const OwnerForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedUnit, setSelectedUnit] = useState("min");
+  const NavigateTo = useNavigate();
 
   const [ownerInfo, setOwnerInfo] = useState({
     firstName: "",
@@ -32,8 +36,11 @@ const OwnerForm = () => {
     phoneNumber: "",
   });
 
+  const [businessTypes, setBusinessTypes] = useState([]);
+
   const [businessInfo, setBusinessInfo] = useState({
     businessName: "",
+    businessAddress: "",
     businessType: null,
   });
 
@@ -42,6 +49,7 @@ const OwnerForm = () => {
     hoursSelection: [new DateObject(), new DateObject()],
     appointmentsLength: "",
   });
+
   const handleOwnerInfoChange = (e) => {
     setOwnerInfo({
       ...ownerInfo,
@@ -65,10 +73,19 @@ const OwnerForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Owner Info:", ownerInfo);
+    // console.log("Owner Info:", ownerInfo);
     console.log("Business Info:", businessInfo);
-    console.log("Appointments Info:", appointmentsInfo);
+    // console.log("Appointments Info:", appointmentsInfo);
+    createBusiness(businessInfo);
+    NavigateTo('/businesses-list');
   };
+
+  const handleBusinessTypes = async () => {
+    const btypes = await readBusinessTypes();
+    console.log("something", btypes);
+    setBusinessTypes(btypes);
+  };
+
   const isDesktop = useMediaQuery("(min-width:600px)");
 
   const handleNext = () => {
@@ -252,10 +269,42 @@ const OwnerForm = () => {
                     }}
                   />
 
+                  <TextField
+                    label="آدرس"
+                    name="businessAddress"
+                    value={businessInfo.businessAddress}
+                    onChange={handleBusinessInfoChange}
+                    fullWidth
+                    sx={{
+                      "& input": {
+                        textAlign: "right",
+                      },
+                      "& .MuiAutocomplete-inputRoot": {
+                        "& .MuiAutocomplete-input": {
+                          "& input": {
+                            paddingRight: "unset",
+                          },
+                        },
+                      },
+                    }}
+                    InputLabelProps={{
+                      sx: {
+                        transformOrigin: "right",
+                        left: "inherit",
+                        right: "1.75rem",
+                        fontSize: "small",
+                        color: "#807D7B",
+                        fontWeight: 400,
+                        overflow: "unset",
+                      },
+                    }}
+                  />
+
                   <Autocomplete
-                    options={["املاک", "زیبایی", "سلامت", "موارد دیگر"]}
+                    options={businessTypes}
                     renderInput={(params) => (
                       <TextField
+                        onFocus={handleBusinessTypes}
                         {...params}
                         label="نوع کسب و کار"
                         fullWidth
@@ -295,8 +344,7 @@ const OwnerForm = () => {
                       setBusinessInfo({ ...businessInfo, businessType: value })
                     }
                     fullWidth
-                    getOptionLabel={(option) => option}
-                    isOptionEqualToValue={(option, value) => option === value}
+                    getOptionLabel={(option) => option.Name}
                   />
                 </Stack>
               )}
@@ -352,7 +400,7 @@ const OwnerForm = () => {
                       }
                     >
                       <Stack spacing={2} textAlign={"right"} fontSize={"small"}>
-                        <label variant="h6">: از ساعت</label>
+                        <Typography variant="item">: از ساعت</Typography>
                         <Calendar
                           disableDayPicker
                           format="HH:mm A"
@@ -370,7 +418,7 @@ const OwnerForm = () => {
                         />
                       </Stack>
                       <Stack spacing={2} textAlign={"right"} fontSize={"small"}>
-                        <label variant="h6">: تا ساعت</label>
+                        <Typography variant="item">: تا ساعت</Typography>
                         <Calendar
                           disableDayPicker
                           format="HH:mm A"

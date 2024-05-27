@@ -7,13 +7,14 @@ RUN go mod download
 
 COPY backend/ ./
 
-RUN go build -o the-wall ./src/the-wall/cmd/the-wall
+RUN go build -o docs ./src/docs
 
 FROM debian:12.5
 
 WORKDIR /app
 
-COPY --from=build /app/the-wall .
+COPY --from=build /app/docs .
+COPY backend/src/docs/openapi.json .
 
 EXPOSE 8080
 
@@ -23,4 +24,4 @@ RUN addgroup --system nonroot \
 
 USER nonroot
 
-CMD ["./the-wall"]
+CMD ["./docs"]

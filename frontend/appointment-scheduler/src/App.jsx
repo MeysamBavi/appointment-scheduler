@@ -6,6 +6,8 @@ import Landing from "./pages/Landing";
 import OwnerForm from "./pages/OwnerForm";
 import BusinessProfile from "./pages/BusinessProfile";
 import AppSidebar from "./pages/BusinessInfo"
+import BusinessesList from "./pages/BusinessesList";
+
 function App() {
   return (
     <Router>
@@ -17,6 +19,7 @@ function App() {
           path="/ownerCreateForm"
           element={<OwnerForm></OwnerForm>}
         />
+        <Route exact path="/businesses-list" element={<BusinessesList />} />
         <Route exact path="/business-profile" element={<BusinessProfile />} />
         <Route exact path="/business-info" element={<AppSidebar />} />
 

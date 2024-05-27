@@ -1,0 +1,1110 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Appointment Scheduler API",
+    "description": "An OpenAPI documentation for The Appointment Scheduler project's RESTful API",
+    "version": "1.0.0"
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "/api",
+      "description": "Development server"
+    }
+  ],
+  "paths": {
+    "/auth/otp/send": {
+      "post": {
+        "summary": "Send OTP Code",
+        "description": "Send an OTP code to the provided phone number.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "phone_number": {
+                    "type": "string",
+                    "description": "The phone number to which the OTP code will be sent."
+                  }
+                },
+                "example": {
+                  "phone_number": "09123123123"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "A message indicating the success of the operation."
+                    }
+                  },
+                  "example": {
+                    "message": "Otp code sent. Check your phone."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/otp/validate": {
+      "post": {
+        "summary": "Validate OTP Code",
+        "description": "Validate the provided OTP code.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "phone_number": {
+                    "type": "string",
+                    "description": "The phone number associated with the OTP code."
+                  },
+                  "code": {
+                    "type": "string",
+                    "description": "The OTP code to be validated."
+                  }
+                },
+                "example": {
+                  "phone_number": "09123123123",
+                  "code": "3123"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "A message indicating the success of the operation."
+                    }
+                  },
+                  "example": {
+                    "message": "You are logged in."
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Wrong code sent"
+          }
+        }
+      }
+    },
+    "/auth/authenticate": {
+      "get": {
+        "summary": "Authenticate Request",
+        "description": "Authenticate the request using JWT token.",
+        "parameters": [
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "A message indicating the success of the authentication."
+                    }
+                  },
+                  "example": {
+                    "message": "Authentication successful."
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid jwt."
+          }
+        }
+      }
+    },
+    "/business-manager/service_types": {
+      "get": {
+        "summary": "Get Service Types",
+        "description": "Retrieve a list of service types.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "description": "Service type ID."
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Service type name."
+                      }
+                    },
+                    "example": {
+                      "id": 1,
+                      "name": "service_type1"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/business-manager/businesses": {
+      "get": {
+        "summary": "Get Businesses",
+        "description": "Retrieve a list of user businesses.",
+        "parameters": [
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "description": "Business ID."
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Business name."
+                      },
+                      "address": {
+                        "type": "string",
+                        "description": "Business address."
+                      }
+                    },
+                    "example": {
+                      "id": 1,
+                      "name": "business name 1",
+                      "address": "address 1"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "server message."
+                    }
+                  },
+                  "example": {
+                    "message": "you are unauthorized."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a business",
+        "description": "Creates a business with given service type.",
+        "parameters": [
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "The business name."
+                  },
+                  "address": {
+                    "type": "string",
+                    "description": "The business address."
+                  },
+                  "service_type": {
+                    "type": "integer",
+                    "description": "The business service type."
+                  }
+                },
+                "example": {
+                  "name": "business name 1",
+                  "address": "tehran",
+                  "service_type": 2
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "A message indicating the success of the operation."
+                    }
+                  },
+                  "example": {
+                    "message": "Otp code sent. Check your phone."
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "A message indicating the not found error."
+                    }
+                  },
+                  "example": {
+                    "message": "service type not found."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/business-manager/businesses/{business_id}": {
+      "get": {
+        "summary": "Get a Businesse",
+        "description": "Retrieve a business.",
+        "parameters": [
+          {
+            "name": "business_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the business."
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "description": "Business ID."
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Business name."
+                    },
+                    "address": {
+                      "type": "string",
+                      "description": "Business address."
+                    }
+                  },
+                  "example": {
+                    "id": 1,
+                    "name": "business name 1",
+                    "address": "address 1"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "server message."
+                    }
+                  },
+                  "example": {
+                    "message": "you are unauthorized."
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "server message."
+                    }
+                  },
+                  "example": {
+                    "message": "business not found."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Given Business",
+        "description": "Deletes business with given ID.",
+        "parameters": [
+          {
+            "name": "business_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the business."
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "business deleted."
+                    }
+                  },
+                  "example": {
+                    "message": "business deleted."
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "server message."
+                    }
+                  },
+                  "example": {
+                    "message": "you are unauthorized."
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "server message."
+                    }
+                  },
+                  "example": {
+                    "message": "business not found."
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "server message."
+                    }
+                  },
+                  "example": {
+                    "message": "you are not business owner."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a business",
+        "description": "Updates a business with given service type.",
+        "parameters": [
+          {
+            "name": "business_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the business."
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "The business name."
+                  },
+                  "address": {
+                    "type": "string",
+                    "description": "The business address."
+                  },
+                  "service_type": {
+                    "type": "integer",
+                    "description": "The business service type."
+                  }
+                },
+                "example": {
+                  "name": "business name 1",
+                  "address": "tehran",
+                  "service_type": 2
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "A message indicating the success of the operation."
+                    }
+                  },
+                  "example": {
+                    "message": "Otp code sent. Check your phone."
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "server message."
+                    }
+                  },
+                  "example": {
+                    "message": "you are unauthorized."
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "server message."
+                    }
+                  },
+                  "example": {
+                    "message": "business not found."
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "server message."
+                    }
+                  },
+                  "example": {
+                    "message": "you are not business owner."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/business-manager/businesses/{business_id}/employees": {
+      "post": {
+        "summary": "Create Employee",
+        "description": "Create a new employee for a business.",
+        "parameters": [
+          {
+            "name": "business_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the business to add the employee to."
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "business_id": {
+                    "type": "integer",
+                    "description": "Id of business to add employee."
+                  },
+                  "user": {
+                    "type": "integer",
+                    "description": "Target user as employee id."
+                  }
+                },
+                "example": {
+                  "business_id": 1,
+                  "user": 5
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Created message."
+                    }
+                  },
+                  "example": {
+                    "message": "employee created."
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Forbidden message."
+                    }
+                  },
+                  "example": {
+                    "message": "you are not business owner."
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Bad request message."
+                    }
+                  },
+                  "example": {
+                    "message": "user id should send."
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "conflict message."
+                    }
+                  },
+                  "example": {
+                    "message": "conflicted."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Get Employees",
+        "description": "Retrieve a list of employees for a business.",
+        "parameters": [
+          {
+            "name": "business_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the business to retrieve employees for."
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "description": "Employee ID."
+                      },
+                      "name": {
+                        "type": "string",
+                        "description": "Name of the employee."
+                      },
+                      "role": {
+                        "type": "string",
+                        "description": "Role of the employee."
+                      }
+                    },
+                    "example": {
+                      "id": 1,
+                      "name": "John Doe",
+                      "role": "Manager"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Forbidden message."
+                    }
+                  },
+                  "example": {
+                    "message": "you are not business owner."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/business-manager/businesses/{business_id}/employees/{employee_id}": {
+      "get": {
+        "summary": "Get an Employee",
+        "description": "Retrieve a specific employee by ID.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "business_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the business."
+          },
+          {
+            "name": "employee_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the employee."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "description": "Employee ID."
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Name of the employee."
+                    }
+                  },
+                  "example": {
+                    "id": 1,
+                    "name": "John Doe"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "not found message."
+                    }
+                  },
+                  "example": {
+                    "message": "employee not found."
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Forbidden message."
+                    }
+                  },
+                  "example": {
+                    "message": "you are not business owner."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an Employee",
+        "description": "Delete a specific employee by ID.",
+        "parameters": [
+          {
+            "name": "business_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the business."
+          },
+          {
+            "name": "employee_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the employee."
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "description": "Employee ID."
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Name of the employee."
+                    }
+                  },
+                  "example": {
+                    "id": 1,
+                    "name": "John Doe"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "not found message."
+                    }
+                  },
+                  "example": {
+                    "message": "employee not found."
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Forbidden message."
+                    }
+                  },
+                  "example": {
+                    "message": "you are not business owner."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/users": {
+      "get": {
+        "summary": "Get a User",
+        "description": "Retrieve a specific employee by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query"
+          },
+          {
+            "name": "phone",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ID": {
+                      "type": "integer",
+                      "description": "User ID."
+                    },
+                    "Firstname": {
+                      "type": "string",
+                      "description": "First Name of the user."
+                    },
+                    "Lastname": {
+                      "type": "string",
+                      "description": "Last Name of the user."
+                    }
+                  },
+                  "example": {
+                    "ID": 5,
+                    "Firstname": "John",
+                    "Lastname": "Doe"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Not found message."
+                    }
+                  },
+                  "example": {
+                    "message": "user not found."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

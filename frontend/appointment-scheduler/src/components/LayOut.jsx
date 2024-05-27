@@ -1,9 +1,16 @@
 import React, { useState } from "react";
-import { AppBar, Toolbar, IconButton, Menu, MenuItem, ClickAwayListener } from "@mui/material";
-import MenuIcon from '@mui/icons-material/Menu';
-import Button from '@mui/material/Button';
-import { Link } from 'react-router-dom';
-import '../styles/LayOut.css';
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  Menu,
+  MenuItem,
+  ClickAwayListener,
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import Button from "@mui/material/Button";
+import { Link } from "react-router-dom";
+import "../styles/LayOut.css";
 
 function Layout({ children }) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -17,7 +24,7 @@ function Layout({ children }) {
   };
 
   return (
-    <div style={{ overflow: "hidden"}}>
+    <div style={{ overflow: "hidden" }}>
       <AppBar position="static">
         <Toolbar>
           <ClickAwayListener onClickAway={handleClose}>
@@ -50,16 +57,18 @@ function Layout({ children }) {
                 </MenuItem>
                 <MenuItem
                   component={Link}
-                  to="/owner-appointmets"
+                  to="/businesses-list"
                   onClick={handleClose}
                   className="menu-item"
                 >
-                  صفحات من
+                  کسب و کار های من
                 </MenuItem>
               </Menu>
             </div>
           </ClickAwayListener>
-          <Button color="inherit" component={Link} to="/login">ورود</Button>
+          <Button color="inherit" component={Link} to="/login">
+            ورود
+          </Button>
         </Toolbar>
       </AppBar>
       <div>{children}</div>

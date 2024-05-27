@@ -2,26 +2,28 @@ package app
 
 import (
 	"fmt"
+	"github.com/MeysamBavi/appointment-scheduler/backend/src/the-wall/pkg/clients"
 
 	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/httpserver"
 	"github.com/MeysamBavi/appointment-scheduler/backend/pkg/jwt"
 	"github.com/MeysamBavi/appointment-scheduler/backend/src/business-manager/internal/models"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 	"gorm.io/gorm"
 )
 
 type Config struct {
-	Port       int
-	EnableCORS bool
+	Port           int
+	CORS           httpserver.CORSConfig
+	TheWallAddress string
 }
 
 type HTTPService struct {
 	server *echo.Echo
 	config Config
 
-	jwtSdk *jwt.JWT
-	db     *gorm.DB
+	jwtSdk     *jwt.JWT
+	db         *gorm.DB
+	wallClient *clients.TheWall
 }
 
 func NewHTTPService(
@@ -30,15 +32,14 @@ func NewHTTPService(
 	db *gorm.DB,
 ) *HTTPService {
 	e := echo.New()
-	if config.EnableCORS {
-		e.Use(middleware.CORS())
-	}
+	e.Use(httpserver.CORSMiddleware(config.CORS))
 	service := &HTTPService{
 		server: e,
 		config: config,
 
-		jwtSdk: jwtSdk,
-		db:     db,
+		jwtSdk:     jwtSdk,
+		db:         db,
+		wallClient: &clients.TheWall{Address: config.TheWallAddress},
 	}
 
 	initRoutes(e, service)
@@ -106,10 +107,10 @@ func migrateDatabase(db *gorm.DB) {
 	result := db.First(&sampleServiceType)
 	if result.RowsAffected == 0 {
 		db.Create(&models.ServiceType{
-			Name: "service_type1",
+			Name: "پزشکی",
 		})
 		db.Create(&models.ServiceType{
-			Name: "servicetype2",
+			Name: "آرایشی",
 		})
 	}
 }
