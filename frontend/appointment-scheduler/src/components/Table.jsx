@@ -3,38 +3,40 @@ import { useTable } from "react-table";
 import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
 import { getEmployees } from "../services/ApiService";
 import "../styles/Sidebar.css"
+import  { useState , useEffect} from "react";
+
 const workersTab = () => {
-  const data = React.useMemo(
-    () => [
-      { id: 1, name: "John Doe", number: "1234567890" },
-      { id: 2, name: "Jane Smith", number: "0987654321" },
-      { id: 2, name: "Jane Smith", number: "0987654321" },
-      { id: 2, name: "Jane Smith", number: "0987654321" },
-      { id: 2, name: "Jane Smith", number: "0987654321" },
-      { id: 2, name: "Jane Smith", number: "0987654321" },
-      { id: 2, name: "Jane Smith", number: "0987654321" },
-      { id: 2, name: "Jane Smith", number: "0987654321" },
-      { id: 2, name: "Jane Smith", number: "0987654321" },
-      { id: 2, name: "Jane Smith", number: "0987654321" },
-      { id: 2, name: "Jane Smith", number: "0987654321" },
+  // const data = React.useMemo(
+  //   () => [
+  //     { id: 1, name: "John Doe", number: "1234567890" },
+  //     { id: 2, name: "Jane Smith", number: "0987654321" },
+  //     { id: 2, name: "Jane Smith", number: "0987654321" },
+  //     { id: 2, name: "Jane Smith", number: "0987654321" },
+  //     { id: 2, name: "Jane Smith", number: "0987654321" },
+  //     { id: 2, name: "Jane Smith", number: "0987654321" },
+  //     { id: 2, name: "Jane Smith", number: "0987654321" },
+  //     { id: 2, name: "Jane Smith", number: "0987654321" },
+  //     { id: 2, name: "Jane Smith", number: "0987654321" },
+  //     { id: 2, name: "Jane Smith", number: "0987654321" },
+  //     { id: 2, name: "Jane Smith", number: "0987654321" },
 
-    ],
-    []
-  );
-//   const [data, setData] = useState([]);
+  //   ],
+  //   []
+  // );
+  const [data, setData] = useState([]);
 
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       try {
-//         const employeesData = await getEmployees();
-//         setData(employeesData);
-//       } catch (error) {
-//         console.error("Error fetching employees data:", error);
-//       }
-//     };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const employeesData = await getEmployees(5);
+        setData(employeesData);
+      } catch (error) {
+        console.error("Error fetching employees data:", error);
+      }
+    };
 
-//     fetchData();
-//   }, []);
+    fetchData();
+  }, []);
   const columns = React.useMemo(
     () => [
       {

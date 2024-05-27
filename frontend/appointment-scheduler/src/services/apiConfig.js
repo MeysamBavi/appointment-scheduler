@@ -21,6 +21,6 @@ export default class apiConfig {
     return `${this.otpBaseUrl()}/validate`;
   }
   static getEmployees(id) {
-    return `${this.otpBaseUrl()}/businesses/${id}/employees`;
+    return `${this.baseUrl()}/business-manager/businesses/${id}/employees`;
   }
 }
