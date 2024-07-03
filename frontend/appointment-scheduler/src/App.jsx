@@ -4,8 +4,7 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Landing from "./pages/Landing";
 import OwnerForm from "./pages/OwnerForm";
-import BusinessProfile from "./pages/BusinessProfile";
-import AppSidebar from "./pages/BusinessInfo"
+import AppSidebar from "./pages/BusinessInfo";
 import BusinessesList from "./pages/BusinessesList";
 
 function App() {
@@ -20,7 +19,6 @@ function App() {
           element={<OwnerForm></OwnerForm>}
         />
         <Route exact path="/businesses-list" element={<BusinessesList />} />
-        <Route exact path="/business-profile" element={<BusinessProfile />} />
         <Route exact path="/business-info" element={<AppSidebar />} />
 
         <Route path="*" element={<NotFound></NotFound>} />

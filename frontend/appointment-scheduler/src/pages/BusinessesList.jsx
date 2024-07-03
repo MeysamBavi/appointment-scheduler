@@ -172,7 +172,7 @@ function BusinessesList() {
               <Grid item>
                 <IconButton
                   onClick={() =>
-                    NavigateTo("/business-profile", {
+                    NavigateTo("/business-info", {
                       state: { id: item["ID"] },
                     })
                   }
