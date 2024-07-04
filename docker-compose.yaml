@@ -1,0 +1,55 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:latest
+    volumes:
+      - ~/apps/postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=appointment_scheduler
+
+  the-wall:
+    build:  
+      dockerfile: ./backend/src/the-wall/Dockerfile
+    environment:
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=appointment_scheduler
+    depends_on:
+      - postgres
+
+  business-manager:
+    build:  
+      dockerfile: ./backend/src/business-manager/Dockerfile
+    environment:
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=appointment_scheduler
+    depends_on:
+      - postgres
+
+  docs:
+    build:  
+      dockerfile: ./backend/src/docs/Dockerfile
+
+  frontend:
+    build: 
+      context: ./frontend/appointment-scheduler
+      dockerfile: ./Dockerfile
+
+  gateway:
+    image: nginx
+    ports:
+      - 80:80
+    volumes:
+      - type: bind
+        source: nginx.conf
+        target: /etc/nginx/nginx.conf
+        read_only: true
+    depends_on:
+      - frontend
+      - the-wall
+      - business-manager
+      - docs
