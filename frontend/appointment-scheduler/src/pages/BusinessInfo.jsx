@@ -4,9 +4,10 @@ import { FaUser, FaList, FaUserFriends } from "react-icons/fa";
 import Layout from "../components/LayOut";
 import WorkersTab from "../components/Table";
 import BusinessProfile from "../components/BusinessProfile";
+import { useLocation } from "react-router-dom";
 
 const Psidebar = () => {
-  const [selectedTab, setSelectedTab] = useState("workers");
+  const [selectedTab, setSelectedTab] = useState("profile");
 
   const renderForm = () => {
     switch (selectedTab) {

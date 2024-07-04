@@ -123,12 +123,17 @@ function BusinessesList() {
     readBusinesses().then((data) => setBusinessesList(data));
   };
 
+  const setIdAndNavigate = (id) => {
+    localStorage.setItem("businessId", id);
+    NavigateTo("/business-info");
+  };
+
   useEffect(() => {
     // TEST
-    setBusinessesList(testData);
+    // setBusinessesList(testData);
     // ENDTEST
 
-    // readBusinesses().then((data) => setBusinessesList(data));
+    readBusinesses().then((data) => setBusinessesList(data));
     console.log("something");
   }, []);
 
@@ -174,13 +179,7 @@ function BusinessesList() {
                 <Typography>{item["Address"]}</Typography>
               </Grid>
               <Grid item>
-                <IconButton
-                  onClick={() =>
-                    NavigateTo("/business-info", {
-                      state: { id: item["ID"] },
-                    })
-                  }
-                >
+                <IconButton onClick={() => setIdAndNavigate(item["ID"])}>
                   <EditIcon color="primary" sx={{ ml: 1 }} />
                 </IconButton>
                 <IconButton onClick={() => handleDeleteBusiness(item["ID"])}>

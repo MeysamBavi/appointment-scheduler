@@ -54,6 +54,8 @@ function BusinessProfile() {
   const [businessInfo, setBusinessInfo] = useState({});
   const [businessTypes, setBusinessTypes] = useState([]);
 
+  const id = localStorage.getItem("businessId");
+
   const loadData = async () => {
     const data = await readBusiness(id);
     setBusinessInfo(data);
@@ -72,6 +74,15 @@ function BusinessProfile() {
     console.log("something", btypes);
     setBusinessTypes(btypes);
   };
+
+  useEffect(() => {
+    // TEST
+    // setBusinessesList(testData);
+    // ENDTEST
+
+    readBusiness(id).then((data) => setBusinessInfo(data));
+    console.log("something");
+  }, []);
 
   return (
     <Container className="todortl" sx={{ px: 1, py: 3 }}>

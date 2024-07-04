@@ -2,8 +2,8 @@ import React from "react";
 import { useTable } from "react-table";
 import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
 import { getEmployees } from "../services/ApiService";
-import "../styles/Sidebar.css"
-import  { useState , useEffect} from "react";
+import "../styles/Sidebar.css";
+import { useState, useEffect } from "react";
 
 const workersTab = () => {
   // const data = React.useMemo(
@@ -28,7 +28,9 @@ const workersTab = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const employeesData = await getEmployees(5);
+        const employeesData = await getEmployees(
+          localStorage.getItem("businessId")
+        );
         setData(employeesData);
       } catch (error) {
         console.error("Error fetching employees data:", error);
@@ -100,7 +102,7 @@ const workersTab = () => {
           <FaPlus />
         </button>
       </div>
-      <div style={{overflow: "auto"}}>
+      <div style={{ overflow: "auto" }}>
         <table
           {...getTableProps()}
           style={{
@@ -134,7 +136,10 @@ const workersTab = () => {
           </thead>
         </table>
       </div>
-      <div style={{ height: "350px", overflow: "auto" }} className="table-scrollable">
+      <div
+        style={{ height: "350px", overflow: "auto" }}
+        className="table-scrollable"
+      >
         <table
           {...getTableProps()}
           style={{
@@ -171,7 +176,7 @@ const workersTab = () => {
       </div>
     </div>
   );
-        }  
+};
 
 const editButtonStyle = {
   backgroundColor: "#007bff",

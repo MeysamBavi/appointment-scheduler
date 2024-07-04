@@ -49,7 +49,7 @@ function Layout({ children }) {
               >
                 <MenuItem
                   component={Link}
-                  to="/customer-appointments"
+                  to="/user-appointments-list"
                   onClick={handleClose}
                   className="menu-item"
                 >
