@@ -124,7 +124,11 @@ function BusinessesList() {
   };
 
   useEffect(() => {
-    readBusinesses().then((data) => setBusinessesList(data));
+    // TEST
+    setBusinessesList(testData);
+    // ENDTEST
+
+    // readBusinesses().then((data) => setBusinessesList(data));
     console.log("something");
   }, []);
 
